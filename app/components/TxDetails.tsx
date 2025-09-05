@@ -1,20 +1,16 @@
 import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react";
 import { Fragment } from "react";
+import type { TxApi } from "../lib/api";
 
 type Props = {
 	open: boolean;
 	onClose: () => void;
-	tx: {
-		hash: string;
-		status: string;
-		from: string;
-		to: string;
-		value: string;
-		blockNumber: number;
-		timestamp: string;
-		gasUsed: string;
-		gasPrice: string;
-	} | null;
+	tx: (TxApi & {
+		blockNumber?: number;
+		timestamp?: string;
+		gasUsed?: string;
+		gasPrice?: string;
+	}) | null;
 };
 
 export default function TxDetails({ open, onClose, tx }: Props) {
@@ -26,7 +22,7 @@ export default function TxDetails({ open, onClose, tx }: Props) {
 				</TransitionChild>
 				<div className="fixed inset-0 flex items-center justify-center p-4">
 					<TransitionChild as={Fragment} enter="ease-out duration-200" enterFrom="opacity-0 translate-y-4" enterTo="opacity-100 translate-y-0" leave="ease-in duration-150" leaveFrom="opacity-100" leaveTo="opacity-0">
-						<DialogPanel className="w-full max-w-2xl rounded-2xl bg-gray-900 border border-gray-800 p-6 text-gray-200">
+						<DialogPanel className="w-full max-w-4xl rounded-2xl bg-gray-900 border border-gray-800 p-6 text-gray-200">
 							<Dialog.Title className="text-lg font-semibold text-white">Transaction Details</Dialog.Title>
 							{tx && (
 								<div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
@@ -40,11 +36,11 @@ export default function TxDetails({ open, onClose, tx }: Props) {
 									</div>
 									<div>
 										<p className="text-gray-400">From</p>
-										<p>{tx.from}</p>
+										<p className="break-all font-mono text-xs">{tx.from}</p>
 									</div>
 									<div>
 										<p className="text-gray-400">To</p>
-										<p>{tx.to}</p>
+										<p className="break-all font-mono text-xs">{tx.to}</p>
 									</div>
 									<div>
 										<p className="text-gray-400">Value</p>

@@ -1,22 +1,55 @@
 import { CheckCircleIcon, ArrowPathIcon, XCircleIcon } from "@heroicons/react/24/solid";
+import { useEffect, useState } from "react";
+import { api, startPolling, type TxApi } from "../lib/api";
 
-type Tx = {
-	id: string;
-	hash: string;
-	from: string;
-	to: string;
-	status: "success" | "pending" | "failed";
-	value: string;
-};
+export default function TxFeed({ onSelect, limit, searchQuery, filter }: { 
+	onSelect: (tx: TxApi) => void; 
+	limit?: number;
+	searchQuery?: string;
+	filter?: string;
+}) {
+	const [txs, setTxs] = useState<TxApi[]>([]);
+	const [error, setError] = useState<string | null>(null);
 
-export default function TxFeed({ onSelect }: { onSelect: (tx: Tx) => void }) {
-	const txs: Tx[] = [
-		{ id: "1", hash: "0xabc123def456...", from: "0x123...", to: "0x456...", status: "success", value: "1.2 ETH" },
-		{ id: "2", hash: "0xdef456abc123...", from: "0x789...", to: "0xabc...", status: "pending", value: "0.5 ETH" },
-		{ id: "3", hash: "0xabc789def012...", from: "0xdef...", to: "0x012...", status: "failed", value: "5.0 ETH" },
-	];
+	useEffect(() => {
+		const fetchTransactions = async () => {
+			try {
+				let result: TxApi[];
+				
+				if (searchQuery && searchQuery.trim()) {
+					result = await api.searchTransactions(searchQuery, limit || 50);
+				} else if (filter && filter !== 'all') {
+					result = await api.filterTransactions(filter, limit || 50);
+				} else {
+					result = await api.getLatestTransactions(limit || 50);
+				}
+				
+				setTxs(result);
+				setError(null);
+			} catch (e) {
+				setError((e as Error).message);
+			}
+		};
 
-	const iconFor = (status: Tx["status"]) => {
+		// Fetch immediately
+		fetchTransactions();
+
+		// Set up polling for latest transactions (only if no search/filter)
+		if (!searchQuery && (!filter || filter === 'all')) {
+			const stop = startPolling(
+				() => api.getLatestTransactions(limit || 50), 
+				600000, // 10 minutes
+				(result) => {
+					setTxs(result);
+					setError(null);
+				}, 
+				(e) => setError((e as Error).message)
+			);
+			return stop;
+		}
+	}, [limit, searchQuery, filter]);
+
+	const iconFor = (status: TxApi["status"]) => {
 		switch (status) {
 			case "success":
 				return <CheckCircleIcon className="h-6 w-6 text-emerald-400" />;
@@ -30,7 +63,13 @@ export default function TxFeed({ onSelect }: { onSelect: (tx: Tx) => void }) {
 	return (
 		<section className="space-y-4">
 			<h2 className="text-2xl font-bold text-white">Real-time Transaction Feed</h2>
+			{error && (
+				<div className="rounded-2xl border border-rose-900 bg-rose-950 text-rose-300 p-4">{error}</div>
+			)}
 			<div className="space-y-4">
+				{txs.length === 0 && !error && (
+					<div className="rounded-2xl bg-gray-900 border border-gray-800 p-4 text-gray-400">Loading transactions…</div>
+				)}
 				{txs.map((tx) => (
 					<button
 						key={tx.id}
@@ -46,7 +85,7 @@ export default function TxFeed({ onSelect }: { onSelect: (tx: Tx) => void }) {
 								</div>
 								<div>
 									<p className="text-gray-400">From / To</p>
-									<p className="text-gray-200 font-medium">{tx.from} → {tx.to}</p>
+									<p className="text-gray-200 font-medium">{tx.from} → {tx.to ?? "(contract creation)"}</p>
 								</div>
 								<div className="justify-self-end">
 									<p className="text-gray-400 text-right">Value</p>
