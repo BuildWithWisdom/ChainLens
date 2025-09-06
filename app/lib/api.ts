@@ -229,30 +229,30 @@ export const api = {
 				totalTxs: 0,
 			};
 		}
-		
-		const { data: recentTxs, error } = await client
-			.from('transactions')
-			.select('*')
-			.gte('timestamp', new Date(Date.now() - 60000).toISOString()) // Last minute
-			.order('timestamp', { ascending: false });
+
+		const { data, error } = await client.rpc('get_analytics_data');
 
 		if (error) {
 			console.error('Error fetching analytics:', error);
 			throw error;
 		}
 
-		const txs = recentTxs || [];
-		const uniqueAddresses = new Set<string>();
-		txs.forEach((tx: Transaction) => {
-			uniqueAddresses.add(tx.from_address);
-			if (tx.to_address) uniqueAddresses.add(tx.to_address);
-		});
+		const stats = data && data[0] ? data[0] : null;
+
+		if (!stats) {
+			return {
+				tps: 0,
+				blocksPerMinute: 0,
+				activeAddresses: 0,
+				totalTxs: 0,
+			};
+		}
 
 		return {
-			tps: Math.round(txs.length / 60), // Transactions per second
-			blocksPerMinute: Math.round(txs.length * 0.1),
-			activeAddresses: uniqueAddresses.size,
-			totalTxs: txs.length,
+			tps: parseFloat(stats.tps_1min) || 0,
+			blocksPerMinute: parseInt(stats.blocks_1min, 10) || 0,
+			activeAddresses: parseInt(stats.active_addresses_1min, 10) || 0,
+			totalTxs: parseInt(stats.txs_1min, 10) || 0,
 		};
 	},
 };

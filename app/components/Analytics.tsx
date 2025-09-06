@@ -19,9 +19,9 @@ export default function Analytics() {
 			}
 		};
 
-		// Update stats immediately and then every 10 minutes
+		// Update stats immediately and then every 6 seconds
 		updateStats();
-		const interval = setInterval(updateStats, 600000);
+		const interval = setInterval(updateStats, 6000);
 		
 		return () => clearInterval(interval);
 	}, []);

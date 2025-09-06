@@ -1,6 +1,6 @@
 import { CheckCircleIcon, ArrowPathIcon, XCircleIcon } from "@heroicons/react/24/solid";
 import { useEffect, useState } from "react";
-import { api, startPolling, type TxApi } from "../lib/api";
+import { api, type TxApi } from "../lib/api";
 
 export default function TxFeed({ onSelect, limit, searchQuery, filter }: { 
 	onSelect: (tx: TxApi) => void; 
@@ -34,19 +34,10 @@ export default function TxFeed({ onSelect, limit, searchQuery, filter }: {
 		// Fetch immediately
 		fetchTransactions();
 
-		// Set up polling for latest transactions (only if no search/filter)
-		if (!searchQuery && (!filter || filter === 'all')) {
-			const stop = startPolling(
-				() => api.getLatestTransactions(limit || 50), 
-				600000, // 10 minutes
-				(result) => {
-					setTxs(result);
-					setError(null);
-				}, 
-				(e) => setError((e as Error).message)
-			);
-			return stop;
-		}
+		// Set up polling for latest transactions
+		const interval = setInterval(fetchTransactions, 6000); // 6 seconds
+
+		return () => clearInterval(interval);
 	}, [limit, searchQuery, filter]);
 
 	const iconFor = (status: TxApi["status"]) => {

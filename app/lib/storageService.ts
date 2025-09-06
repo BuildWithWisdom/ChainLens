@@ -14,10 +14,10 @@ export class TransactionStorageService {
 		// Store transactions immediately
 		this.storeTransactions();
 		
-		// Then store every 2 minutes (for testing)
+		// Then store every 6 seconds
 		this.intervalId = setInterval(() => {
 			this.storeTransactions();
-		}, 120000);
+		}, 6000);
 	}
 
 	stop() {
