@@ -14,13 +14,7 @@ export function Welcome() {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [filter, setFilter] = useState("all");
 
-	// Start the background storage service
-	useEffect(() => {
-		transactionStorageService.start();
-		return () => {
-			transactionStorageService.stop();
-		};
-	}, []);
+	
 
 	return (
 		<div className="min-h-screen bg-gray-950 text-gray-200">

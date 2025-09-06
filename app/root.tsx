@@ -6,6 +6,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import { useEffect } from "react";
+import { transactionStorageService } from "./lib/storageService";
 
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -24,6 +26,13 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    transactionStorageService.start();
+    return () => {
+      transactionStorageService.stop();
+    };
+  }, []);
+
   return (
     <html lang="en">
       <head>
