@@ -255,6 +255,24 @@ export const api = {
 			totalTxs: parseInt(stats.txs_1min, 10) || 0,
 		};
 	},
+
+	// Get transaction volume for the last 24 hours
+	async getTransactionVolume() {
+		const client = supabase.client;
+		if (!client) {
+			console.warn('Supabase client not available, returning empty array');
+			return [];
+		}
+
+		const { data, error } = await client.rpc('get_transaction_volume');
+
+		if (error) {
+			console.error('Error fetching transaction volume:', error);
+			throw error;
+		}
+
+		return data || [];
+	},
 };
 
 export function startPolling<T>(

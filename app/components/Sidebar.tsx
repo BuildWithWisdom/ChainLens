@@ -19,8 +19,8 @@ export default function Sidebar({ onSearch, onFilter }: {
 	};
 
 	return (
-		<aside className="hidden lg:block w-72 shrink-0 pr-6">
-			<div className="sticky top-20 space-y-6">
+		<aside className="w-full lg:w-72 lg:shrink-0 lg:pr-6">
+			<div className="lg:sticky lg:top-20 space-y-6">
 				<div>
 					<label className="sr-only" htmlFor="search">Search</label>
 					<input
