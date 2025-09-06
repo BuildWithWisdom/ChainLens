@@ -5,6 +5,8 @@ import TxFeed from "../components/TxFeed";
 import Analytics from "../components/Analytics";
 import TransactionChart from "../components/TransactionChart";
 import { useState } from "react";
+import TxDetails from "../components/TxDetails";
+import type { TxApi } from "../lib/api";
 
 export function meta({}: Route.MetaArgs) {
 	return [
@@ -15,7 +17,7 @@ export function meta({}: Route.MetaArgs) {
 
 export default function TransactionsPage() {
 	const [open, setOpen] = useState(false);
-	const [selected, setSelected] = useState<any>(null);
+	const [selected, setSelected] = useState<TxApi | null>(null);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [filter, setFilter] = useState("all");
 
@@ -37,6 +39,7 @@ export default function TransactionsPage() {
 					</div>
 				</div>
 			</main>
+			<TxDetails open={open} onClose={() => setOpen(false)} tx={selected} />
 		</div>
 	);
 }

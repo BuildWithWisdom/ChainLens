@@ -39,4 +39,8 @@ export type Transaction = {
   timestamp: string;
   created_at: string;
   updated_at: string;
+  input_data?: string | null;
+  nonce?: number | null;
+  type?: string | null;
+  chain_id?: number | null;
 };

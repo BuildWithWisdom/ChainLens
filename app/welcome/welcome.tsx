@@ -6,22 +6,11 @@ import Analytics from "../components/Analytics";
 import TransactionChart from "../components/TransactionChart";
 import TxDetails from "../components/TxDetails";
 import { transactionStorageService } from "../lib/storageService";
-
-type TxForDetails = {
-	hash: string;
-	status: string;
-	from: string;
-	to: string;
-	value: string;
-	blockNumber: number;
-	timestamp: string;
-	gasUsed: string;
-	gasPrice: string;
-};
+import type { TxApi } from "../lib/api";
 
 export function Welcome() {
 	const [open, setOpen] = useState(false);
-	const [selected, setSelected] = useState<TxForDetails | null>(null);
+	const [selected, setSelected] = useState<TxApi | null>(null);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [filter, setFilter] = useState("all");
 
@@ -45,17 +34,7 @@ export function Welcome() {
 							searchQuery={searchQuery}
 							filter={filter}
 							onSelect={(tx) => {
-								setSelected({
-									hash: tx.fullHash, // Use full hash in details
-									status: tx.status,
-									from: tx.from,
-									to: tx.to,
-									value: tx.value,
-									blockNumber: tx.blockNumber ?? 0,
-									timestamp: tx.timestamp ?? "",
-									gasUsed: tx.gasUsed ?? "",
-									gasPrice: tx.gasPrice ?? "",
-								});
+								setSelected(tx);
 								setOpen(true);
 							}}
 						/>

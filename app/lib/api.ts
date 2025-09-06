@@ -12,6 +12,10 @@ export type TxApi = {
 	timestamp?: string;
 	gasUsed?: string;
 	gasPrice?: string;
+	inputData?: string;
+	nonce?: number;
+	type?: string;
+	chainId?: number;
 };
 
 const API_URL = (import.meta as any).env?.VITE_API_URL ?? "";
@@ -64,14 +68,18 @@ function dbToApi(tx: Transaction): TxApi {
 		id: tx.id,
 		hash: truncateAddress(tx.hash),
 		fullHash: tx.hash,
-		from: truncateAddress(tx.from_address),
-		to: tx.to_address ? truncateAddress(tx.to_address) : null,
+		from: tx.from_address,
+		to: tx.to_address ? tx.to_address : null,
 		status: tx.status as "success" | "pending" | "failed",
 		value: `${tx.value_eth} ETH`,
 		blockNumber: tx.block_number,
 		timestamp: tx.timestamp,
-		gasUsed: tx.gas_used || undefined,
-		gasPrice: tx.gas_price || undefined,
+		gasUsed: tx.gas_used?.toString(),
+		gasPrice: tx.gas_price?.toString(),
+		inputData: tx.input_data || undefined,
+		nonce: tx.nonce || undefined,
+		type: tx.type?.toString() || undefined,
+		chainId: tx.chain_id || undefined,
 	};
 }
 
@@ -90,6 +98,7 @@ export const api = {
 		const transactionsToStore = [];
 		
 		for (const t of block?.transactions ?? []) {
+			console.log("Raw RPC Transaction:", t);
 			const valueWei = BigInt(t.value || "0");
 			const valueEth = Number(valueWei) / Math.pow(10, 18);
 			
@@ -99,13 +108,17 @@ export const api = {
 				to_address: t.to,
 				value_wei: t.value || "0",
 				value_eth: valueEth,
-				status: "success",
-				block_number: hexToNumber(t.blockNumber) || 0,
+				status: "success", // Assuming success for now
+				block_number: hexToNumber(t.blockNumber),
 				block_hash: block?.hash,
 				transaction_index: hexToNumber(t.transactionIndex),
-				gas_used: t.gas,
-				gas_price: t.gasPrice,
+				gas_used: hexToNumber(t.gas),
+				gas_price: hexToNumber(t.gasPrice),
 				timestamp: timestamp ? new Date(timestamp * 1000).toISOString() : new Date().toISOString(),
+				input_data: t.input,
+				nonce: hexToNumber(t.nonce),
+				type: hexToNumber(t.type),
+				chain_id: hexToNumber(t.chainId),
 			});
 		}
 		
@@ -215,6 +228,32 @@ export const api = {
 		}
 		
 		return data?.map(dbToApi) || [];
+	},
+
+	// Get a single transaction by its full hash
+	async getTxByFullHash(hash: string): Promise<TxApi | null> {
+		const client = supabase.client;
+		if (!client) {
+			console.warn('Supabase client not available, returning null');
+			return null;
+		}
+
+		const { data, error } = await client
+			.from('transactions')
+			.select('*')
+			.eq('hash', hash)
+			.single();
+
+		if (error) {
+			console.error(`Error fetching transaction ${hash}:`, error);
+			// If no row is found, Supabase returns an error. We should handle this gracefully.
+			if (error.code === 'PGRST116') {
+				return null;
+			}
+			throw error;
+		}
+
+		return data ? dbToApi(data) : null;
 	},
 
 	// Get analytics data

@@ -1,5 +1,6 @@
 import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react";
 import { Fragment } from "react";
+import { Link } from "react-router";
 import type { TxApi } from "../lib/api";
 
 type Props = {
@@ -62,8 +63,11 @@ export default function TxDetails({ open, onClose, tx }: Props) {
 									</div>
 								</div>
 							)}
-							<div className="mt-6 flex justify-end">
-								<button onClick={onClose} className="rounded-xl bg-cyan-500/90 hover:bg-cyan-400 px-4 py-2 text-sm font-medium text-gray-900">Close</button>
+							<div className="mt-6 flex justify-end gap-4">
+								<button onClick={onClose} className="rounded-xl bg-gray-700 hover:bg-gray-600 px-4 py-2 text-sm font-medium text-white">Close</button>
+								{tx && (
+									<Link to={`/transaction/${tx.fullHash}`} className="rounded-xl bg-cyan-500/90 hover:bg-cyan-400 px-4 py-2 text-sm font-medium text-gray-900">See full details</Link>
+								)}
 							</div>
 						</DialogPanel>
 					</TransitionChild>
