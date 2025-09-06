@@ -8,6 +8,7 @@ import {
 } from "react-router";
 import { useEffect } from "react";
 import { transactionStorageService } from "./lib/storageService";
+import Footer from "./components/Footer";
 
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -43,6 +44,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body className="dark bg-gray-950 text-gray-200">
         {children}
+        <Footer />
         <ScrollRestoration />
         <Scripts />
       </body>
