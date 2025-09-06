@@ -5,7 +5,8 @@ export default function Navbar() {
 		<header className="fixed top-0 inset-x-0 z-40 bg-gray-900/80 backdrop-blur supports-[backdrop-filter]:bg-gray-900/60 border-b border-gray-800">
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 				<div className="flex items-center gap-3">
-					<div className="h-6 w-6 rounded-lg bg-cyan-500" />
+					<img src="/favicon.ico" alt="App Logo" className="h-6 w-6" />
+					
 					<Link to="/" className="text-white font-semibold tracking-tight">Chainlens</Link>
 				</div>
 				<nav className="hidden md:flex items-center gap-8 text-sm text-gray-300">

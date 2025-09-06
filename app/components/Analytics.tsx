@@ -35,11 +35,11 @@ export default function Analytics() {
 					<p className="mt-2 text-3xl font-semibold text-cyan-400">{stats.tps}</p>
 				</div>
 				<div className="rounded-2xl bg-gradient-to-br from-indigo-800/30 to-slate-800/30 border border-gray-800 p-6">
-					<p className="text-sm text-gray-300">Blocks per minute</p>
+					<p className="text-sm text-gray-300">Blocks (1min)</p>
 					<p className="mt-2 text-3xl font-semibold text-cyan-400">{stats.blocksPerMinute}</p>
 				</div>
 				<div className="rounded-2xl bg-gradient-to-br from-sky-800/30 to-slate-800/30 border border-gray-800 p-6">
-					<p className="text-sm text-gray-300">Active addresses</p>
+					<p className="text-sm text-gray-300">Active addresses (1min)</p>
 					<p className="mt-2 text-3xl font-semibold text-cyan-400">{stats.activeAddresses}</p>
 				</div>
 				<div className="rounded-2xl bg-gradient-to-br from-emerald-800/30 to-slate-800/30 border border-gray-800 p-6">
