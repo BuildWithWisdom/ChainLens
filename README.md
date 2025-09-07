@@ -72,7 +72,7 @@ To run Chainlens locally:
 
 1.  **Clone the repository:**
     ```bash
-    git clone [Your Repository URL]
+    git clone Chainlens
     cd chainlens
     ```
 2.  **Install dependencies:**
