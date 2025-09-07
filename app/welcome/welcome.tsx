@@ -5,7 +5,6 @@ import TxFeed from "../components/TxFeed";
 import Analytics from "../components/Analytics";
 import TransactionChart from "../components/TransactionChart";
 import TxDetails from "../components/TxDetails";
-import { transactionStorageService } from "../lib/storageService";
 import type { TxApi } from "../lib/api";
 
 export function Welcome() {
@@ -20,7 +19,7 @@ export function Welcome() {
 		<div className="min-h-screen bg-gray-950 text-gray-200">
 			<Navbar />
 			<main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-20 pb-10">
-				<div className="flex flex-col lg:flex-row gap-6">
+					<div className="flex flex-col lg:flex-row gap-6">
 					<Sidebar onSearch={setSearchQuery} onFilter={setFilter} />
 					<div className="flex-1">
 						<TxFeed
