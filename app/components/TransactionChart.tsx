@@ -13,6 +13,7 @@ import {
 } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import { api } from '../lib/api';
+import SkeletonLoader from './SkeletonLoader';
 
 ChartJS.register(
   CategoryScale,
@@ -27,10 +28,12 @@ ChartJS.register(
 
 export default function TransactionChart() {
   const [chartData, setChartData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const volumeData = await api.getTransactionVolume();
         
@@ -53,7 +56,9 @@ export default function TransactionChart() {
         });
         setError(null);
       } catch (e) {
-        setError((e as Error).message);
+        setError("Could not load transaction chart data. Please try again later.");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -106,19 +111,19 @@ export default function TransactionChart() {
     },
   };
 
-  if (error) {
-    return <div className="rounded-2xl border border-rose-900 bg-rose-950 text-rose-300 p-4 mt-8">Error loading chart: {error}</div>;
-  }
-
-  if (!chartData) {
-    return <div className="rounded-2xl bg-gray-900 border border-gray-800 p-4 mt-8 h-64 animate-pulse"></div>;
-  }
-
   return (
     <section className="mt-8">
       <h3 className="text-xl font-bold text-white mb-4">Transaction Volume (24h)</h3>
-      <div className="rounded-2xl bg-gray-900 border border-gray-800 p-4 h-64">
-        <Line options={options} data={chartData} />
+      <div className="rounded-2xl bg-gray-900 border border-gray-800 p-4 h-64 flex items-center justify-center">
+        {loading ? (
+          <SkeletonLoader className="h-full w-full" />
+        ) : error ? (
+          <div className="text-center text-rose-300">{error}</div>
+        ) : chartData ? (
+          <Line options={options} data={chartData} />
+        ) : (
+          <div className="text-center text-gray-400">No chart data available.</div>
+        )}
       </div>
     </section>
   );

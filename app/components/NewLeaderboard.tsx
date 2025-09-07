@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { api } from '../lib/api';
 import classnames from 'classnames';
 
+import SkeletonLoader from './SkeletonLoader';
+
 interface LeaderboardProps {
   limit: number;
 }
@@ -18,11 +20,13 @@ const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit }) => {
     volume: [],
   });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        setError(null);
         const [senders, receivers, volume] = await Promise.all([
           api.getTopSenders(limit, timeFilter),
           api.getTopReceivers(limit, timeFilter),
@@ -31,6 +35,7 @@ const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit }) => {
         setData({ senders, receivers, volume });
       } catch (error) {
         console.error("Error fetching leaderboard data:", error);
+        setError("Could not load leaderboard data. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -39,9 +44,31 @@ const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit }) => {
     fetchData();
   }, [limit, timeFilter]);
 
-  const renderTable = () => {
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <div className="space-y-2">
+          {[...Array(limit)].map((_, i) => (
+            <div key={i} className="grid grid-cols-3 gap-4 items-center p-2">
+              <SkeletonLoader className="h-5 w-5 rounded-full" />
+              <SkeletonLoader className="h-5 w-3/4" />
+              <SkeletonLoader className="h-5 w-1/2 justify-self-end" />
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    if (error) {
+      return <p className="text-center text-red-400">{error}</p>;
+    }
+
     const tableData = data[activeTab];
     const metricLabel = activeTab === 'volume' ? 'Total Volume' : 'Transactions';
+
+    if (tableData.length === 0) {
+      return <p className="text-center text-gray-400">No data available for this period.</p>;
+    }
 
     return (
       <div className="overflow-x-auto">
@@ -130,7 +157,7 @@ const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit }) => {
         </nav>
       </div>
       <div className="mt-4">
-        {loading ? <p>Loading...</p> : renderTable()}
+        {renderContent()}
       </div>
     </div>
   );
