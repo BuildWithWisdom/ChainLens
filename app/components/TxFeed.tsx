@@ -74,12 +74,14 @@ export default function TxFeed({ onSelect, limit, searchQuery, filter }: {
 									<p className="text-gray-400">Tx Hash</p>
 									<p className="text-gray-200 font-medium">{tx.hash}</p>
 								</div>
-																	<p className="text-gray-400">From / To</p>
+								<div>
+									<p className="text-gray-400">From / To</p>
 									<div className="flex items-center gap-1 text-gray-200 font-medium">
 										<span className="truncate max-w-[60px]">{tx.from}</span>
 										<span>→</span>
 										<span className="truncate max-w-[60px]">{tx.to ?? "(contract creation)"}</span>
 									</div>
+								</div>
 								<div className="justify-self-end">
 									<p className="text-gray-400 text-right">Value</p>
 									<p className="text-gray-200 font-semibold">{tx.value}</p>
@@ -92,5 +94,3 @@ export default function TxFeed({ onSelect, limit, searchQuery, filter }: {
 		</section>
 	);
 }
-
-
