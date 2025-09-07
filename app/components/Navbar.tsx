@@ -10,9 +10,10 @@ export default function Navbar() {
 					<Link to="/" className="text-white font-semibold tracking-tight">Chainlens</Link>
 				</div>
 				<nav className="hidden md:flex items-center gap-8 text-sm text-gray-300">
-					<a href="#" className="hover:text-white">Docs</a>
-					<a href="#" className="hover:text-white">About</a>
-					<button className="ml-2 inline-flex items-center rounded-xl bg-cyan-500/90 hover:bg-cyan-400 px-3 py-2 text-sm font-medium text-gray-900 shadow-sm transition-colors">Connect Wallet</button>
+					<button disabled title="Coming soon" className="hover:text-white disabled:opacity-50 disabled:cursor-not-allowed">Try Somnia gas free</button>
+					<button disabled title="Coming soon" className="hover:text-white disabled:opacity-50 disabled:cursor-not-allowed">Join Pool</button>
+					<Link to="/about" className="hover:text-white">About Chainlens</Link>
+					<button disabled title="Coming soon" className="ml-2 inline-flex items-center rounded-xl bg-cyan-500/90 hover:bg-cyan-400 px-3 py-2 text-sm font-medium text-gray-900 shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed">Connect Wallet</button>
 				</nav>
 			</div>
 		</header>

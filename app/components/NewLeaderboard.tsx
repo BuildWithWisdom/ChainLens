@@ -75,13 +75,15 @@ const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit }) => {
   return (
     <div className="bg-gray-900/50 rounded-xl shadow-lg p-6 mt-8">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-xl font-semibold text-cyan-400">Leaderboards</h3>
+        <h3 className="text-lg sm:text-xl font-semibold text-cyan-400">Leaderboards</h3>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 text-sm">
-            <button onClick={() => setTimeFilter(1)} className={classnames('px-3 py-1 rounded-md', { 'bg-cyan-500/90 text-gray-900': timeFilter === 1, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 1 })}>24H</button>
-            <button onClick={() => setTimeFilter(7)} className={classnames('px-3 py-1 rounded-md', { 'bg-cyan-500/90 text-gray-900': timeFilter === 7, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 7 })}>7D</button>
-            <button onClick={() => setTimeFilter(30)} className={classnames('px-3 py-1 rounded-md', { 'bg-cyan-500/90 text-gray-900': timeFilter === 30, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 30 })}>30D</button>
-          </div>
+          {limit > 5 && (
+            <div className="flex items-center gap-2 text-sm">
+              <button onClick={() => setTimeFilter(1)} className={classnames('px-3 py-1 rounded-md', { 'bg-cyan-500/90 text-gray-900': timeFilter === 1, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 1 })}>24H</button>
+              <button onClick={() => setTimeFilter(7)} className={classnames('px-3 py-1 rounded-md', { 'bg-cyan-500/90 text-gray-900': timeFilter === 7, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 7 })}>7D</button>
+              <button onClick={() => setTimeFilter(30)} className={classnames('px-3 py-1 rounded-md', { 'bg-cyan-500/90 text-gray-900': timeFilter === 30, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 30 })}>30D</button>
+            </div>
+          )}
           {limit <= 5 && (
               <a href="/leaderboard" className="inline-flex items-center rounded-md bg-cyan-500/90 hover:bg-cyan-400 px-3 py-1 text-sm font-medium text-gray-900">View All</a>
           )}
