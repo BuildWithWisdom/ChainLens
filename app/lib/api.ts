@@ -209,6 +209,40 @@ export const api = {
 			throw error;
 		}
 
+				return data || [];
+	},
+
+	// Leaderboard APIs
+	async getTopSenders(limit: number = 5, timeFilter: number = 7) {
+		const client = supabase.client;
+		if (!client) return [];
+		const { data, error } = await client.rpc('get_top_senders', { limit_count: limit, time_interval_days: timeFilter });
+		if (error) {
+			console.error('Error fetching top senders:', error);
+			throw error;
+		}
+		return data || [];
+	},
+
+	async getTopReceivers(limit: number = 5, timeFilter: number = 7) {
+		const client = supabase.client;
+		if (!client) return [];
+		const { data, error } = await client.rpc('get_top_receivers', { limit_count: limit, time_interval_days: timeFilter });
+		if (error) {
+			console.error('Error fetching top receivers:', error);
+			throw error;
+		}
+		return data || [];
+	},
+
+	async getTopVolume(limit: number = 5, timeFilter: number = 7) {
+		const client = supabase.client;
+		if (!client) return [];
+		const { data, error } = await client.rpc('get_top_volume', { limit_count: limit, time_interval_days: timeFilter });
+		if (error) {
+			console.error('Error fetching top volume:', error);
+			throw error;
+		}
 		return data || [];
 	},
 };

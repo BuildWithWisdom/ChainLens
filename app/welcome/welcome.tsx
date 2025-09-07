@@ -6,6 +6,7 @@ import Analytics from "../components/Analytics";
 import TransactionChart from "../components/TransactionChart";
 import TxDetails from "../components/TxDetails";
 import type { TxApi } from "../lib/api";
+import NewLeaderboard from "../components/NewLeaderboard";
 
 export function Welcome() {
 	const [open, setOpen] = useState(false);
@@ -19,7 +20,8 @@ export function Welcome() {
 		<div className="min-h-screen bg-gray-950 text-gray-200">
 			<Navbar />
 			<main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-20 pb-10">
-					<div className="flex flex-col lg:flex-row gap-6">
+					<Analytics />
+					<div className="flex flex-col lg:flex-row gap-6 mt-8">
 					<Sidebar onSearch={setSearchQuery} onFilter={setFilter} />
 					<div className="flex-1">
 						<TxFeed
@@ -34,10 +36,10 @@ export function Welcome() {
 						<div className="mt-4">
 							<a href="/transactions" className="inline-flex items-center rounded-xl bg-cyan-500/90 hover:bg-cyan-400 px-4 py-2 text-sm font-medium text-gray-900">Show all transactions</a>
 						</div>
-						<Analytics />
-						<TransactionChart />
 					</div>
 				</div>
+				<TransactionChart />
+				<NewLeaderboard limit={3} />
 			</main>
 			<TxDetails open={open} onClose={() => setOpen(false)} tx={selected} />
 		</div>
