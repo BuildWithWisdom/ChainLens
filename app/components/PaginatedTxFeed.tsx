@@ -21,7 +21,6 @@ export default function PaginatedTxFeed({ onSelect, searchQuery, filter }: {
 		setLoading(true);
 		try {
 			const offset = currentPage * TXS_PER_PAGE;
-			console.log(`Fetching page: ${currentPage}, offset: ${offset}, TXS_PER_PAGE: ${TXS_PER_PAGE}`);
 			let result: TxApi[];
 			
 			if (currentSearchQuery && currentSearchQuery.trim()) {

@@ -9,7 +9,9 @@ export default function Navbar() {
 					
 					<Link to="/" className="text-white font-semibold tracking-tight">Chainlens</Link>
 				</div>
-				<nav className="hidden md:flex items-center gap-8 text-sm text-gray-300">
+				<nav className="md:flex items-center gap-8 text-sm text-gray-300">
+					<Link to="/transactions" className="hover:text-white">Transactions</Link>
+					<Link to="/leaderboard" className="hover:text-white">Leaderboards</Link>
 					<button disabled title="Coming soon" className="hover:text-white disabled:opacity-50 disabled:cursor-not-allowed">Try Somnia gas free</button>
 					<button disabled title="Coming soon" className="hover:text-white disabled:opacity-50 disabled:cursor-not-allowed">Join Pool</button>
 					<Link to="/about" className="hover:text-white">About Chainlens</Link>

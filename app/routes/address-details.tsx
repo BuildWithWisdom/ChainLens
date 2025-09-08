@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 import Navbar from '../components/Navbar';
 import { api, type TxApi } from '../lib/api';
 import SkeletonLoader from '../components/SkeletonLoader';
-import { CheckCircleIcon, ArrowPathIcon, XCircleIcon } from "@heroicons/react/24/solid";
+import { ArrowLeftIcon, CheckCircleIcon, ArrowPathIcon, XCircleIcon } from "@heroicons/react/24/solid";
 
 export default function AddressDetailsPage() {
+  const navigate = useNavigate();
   const { hash } = useParams(); // 'hash' here is actually the address
   const address = hash as string;
 
@@ -98,6 +99,12 @@ export default function AddressDetailsPage() {
     <div className="min-h-screen bg-gray-950 text-gray-200">
       <Navbar />
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-20 pb-10">
+        <div className="mb-6">
+          <button onClick={() => navigate(-1)} className="inline-flex items-center text-cyan-400 hover:text-cyan-300 transition-colors">
+            <ArrowLeftIcon className="h-5 w-5 mr-2" />
+            Back
+          </button>
+        </div>
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-cyan-400 mb-6 break-all">Address: {address}</h1>
 
         {/* Summary Section */}

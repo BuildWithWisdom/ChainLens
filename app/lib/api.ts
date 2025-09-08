@@ -65,9 +65,6 @@ export const api = {
 			throw error;
 		}
 		
-		// ADD THIS LINE
-		console.log(`API.getLatestTransactions: Fetched ${data?.length || 0} transactions with limit ${limit} and offset ${offset}`);
-
 		return data?.map(dbToApi) || [];
 	},
 
@@ -92,9 +89,6 @@ export const api = {
 			throw error;
 		}
 		
-		// ADD THIS LINE
-		console.log(`API.searchTransactions: Fetched ${data?.length || 0} transactions with limit ${limit} and offset ${offset}`);
-
 		return data?.map(dbToApi) || [];
 	},
 
@@ -135,9 +129,6 @@ export const api = {
 			throw error;
 		}
 		
-		// ADD THIS LINE
-		console.log(`API.filterTransactions: Fetched ${data?.length || 0} transactions with limit ${limit} and offset ${offset}`);
-
 		return data?.map(dbToApi) || [];
 	},
 

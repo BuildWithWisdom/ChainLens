@@ -36,7 +36,7 @@ export default function Analytics() {
 	const renderStat = (label: string, value: string | number) => (
 		<div className="rounded-2xl bg-gradient-to-br from-cyan-800/30 to-slate-800/30 border border-gray-800 p-6">
 			<p className="text-sm text-gray-300">{label}</p>
-			{(initialLoading || stats.totalTxs === 0) ? (
+			{(initialLoading || (error && stats.totalTxs === 0 && stats.blocksPerMinute === 0 && stats.activeAddresses === 0 && stats.tps === 0)) ? (
 				<SkeletonLoader className="h-8 w-3/4 mt-2" />
 			) : (
 				<p className="mt-2 text-3xl font-semibold text-cyan-400">{value}</p>
