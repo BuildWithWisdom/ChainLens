@@ -2,6 +2,7 @@ import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/re
 import { Fragment } from "react";
 import { Link } from "react-router";
 import type { TxApi } from "../lib/api";
+import SkeletonLoader from "./SkeletonLoader";
 
 type Props = {
 	open: boolean;
@@ -25,7 +26,18 @@ export default function TxDetails({ open, onClose, tx }: Props) {
 					<TransitionChild as={Fragment} enter="ease-out duration-200" enterFrom="opacity-0 translate-y-4" enterTo="opacity-100 translate-y-0" leave="ease-in duration-150" leaveFrom="opacity-100" leaveTo="opacity-0">
 						<DialogPanel className="w-full max-w-4xl rounded-2xl bg-gray-900 border border-gray-800 p-6 text-gray-200">
 							<Dialog.Title className="text-lg font-semibold text-white">Transaction Details</Dialog.Title>
-							{tx && (
+							{!tx ? (
+								<div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+									<SkeletonLoader className="h-5 w-3/4" />
+									<SkeletonLoader className="h-5 w-1/2" />
+									<SkeletonLoader className="h-5 w-full" />
+									<SkeletonLoader className="h-5 w-2/3" />
+									<SkeletonLoader className="h-5 w-1/4" />
+									<SkeletonLoader className="h-5 w-full" />
+									<SkeletonLoader className="h-5 w-1/2" />
+									<SkeletonLoader className="h-5 w-3/4" />
+								</div>
+							) : (
 								<div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
 									<div>
 										<p className="text-gray-400">Tx Hash</p>
@@ -37,11 +49,11 @@ export default function TxDetails({ open, onClose, tx }: Props) {
 									</div>
 									<div>
 										<p className="text-gray-400">From</p>
-										<p className="break-all font-mono text-xs">{tx.from}</p>
+										<Link to={`/address/${tx.from}`} className="break-all font-mono text-xs text-cyan-300 hover:underline">{tx.from}</Link>
 									</div>
 									<div>
 										<p className="text-gray-400">To</p>
-										<p className="break-all font-mono text-xs">{tx.to}</p>
+										<Link to={`/address/${tx.to}`} className="break-all font-mono text-xs text-cyan-300 hover:underline">{tx.to ?? "(contract creation)"}</Link>
 									</div>
 									<div>
 										<p className="text-gray-400">Value</p>

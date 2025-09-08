@@ -46,7 +46,7 @@ function dbToApi(tx: Transaction): TxApi {
 
 export const api = {
 	// Fetch latest transactions from database
-	async getLatestTransactions(limit: number = 50): Promise<TxApi[]> {
+	async getLatestTransactions(limit: number = 50, offset: number = 0): Promise<TxApi[]> {
 		const client = supabase.client;
 		if (!client) {
 			console.warn('Supabase client not available, returning empty array');
@@ -57,18 +57,22 @@ export const api = {
 			.from('transactions')
 			.select('*')
 			.order('timestamp', { ascending: false })
-			.limit(limit);
+			.limit(limit)
+			.range(offset, offset + limit - 1); // Use range for offset
 		
 		if (error) {
 			console.error('Error fetching transactions:', error);
 			throw error;
 		}
 		
+		// ADD THIS LINE
+		console.log(`API.getLatestTransactions: Fetched ${data?.length || 0} transactions with limit ${limit} and offset ${offset}`);
+
 		return data?.map(dbToApi) || [];
 	},
 
 	// Search transactions
-	async searchTransactions(query: string, limit: number = 50): Promise<TxApi[]> {
+	async searchTransactions(query: string, limit: number = 50, offset: number = 0): Promise<TxApi[]> {
 		const client = supabase.client;
 		if (!client) {
 			console.warn('Supabase client not available, returning empty array');
@@ -80,18 +84,22 @@ export const api = {
 			.select('*')
 			.or(`hash.ilike.%${query}%,from_address.ilike.%${query}%,to_address.ilike.%${query}%`)
 			.order('timestamp', { ascending: false })
-			.limit(limit);
+			.limit(limit)
+			.range(offset, offset + limit - 1); // Use range for offset
 		
 		if (error) {
 			console.error('Error searching transactions:', error);
 			throw error;
 		}
 		
+		// ADD THIS LINE
+		console.log(`API.searchTransactions: Fetched ${data?.length || 0} transactions with limit ${limit} and offset ${offset}`);
+
 		return data?.map(dbToApi) || [];
 	},
 
 	// Filter transactions by type
-	async filterTransactions(filter: string, limit: number = 50): Promise<TxApi[]> {
+	async filterTransactions(filter: string, limit: number = 50, offset: number = 0): Promise<TxApi[]> {
 		const client = supabase.client;
 		if (!client) {
 			console.warn('Supabase client not available, returning empty array');
@@ -102,7 +110,8 @@ export const api = {
 			.from('transactions')
 			.select('*')
 			.order('timestamp', { ascending: false })
-			.limit(limit);
+			.limit(limit)
+			.range(offset, offset + limit - 1); // Use range for offset
 
 		switch (filter) {
 			case 'token_transfers':
@@ -126,6 +135,9 @@ export const api = {
 			throw error;
 		}
 		
+		// ADD THIS LINE
+		console.log(`API.filterTransactions: Fetched ${data?.length || 0} transactions with limit ${limit} and offset ${offset}`);
+
 		return data?.map(dbToApi) || [];
 	},
 
@@ -244,5 +256,28 @@ export const api = {
 			throw error;
 		}
 		return data || [];
+	},
+
+	// Address Details APIs
+	async getAddressSummary(address: string) {
+		const client = supabase.client;
+		if (!client) return null;
+		const { data, error } = await client.rpc('get_address_summary', { target_address: address });
+		if (error) {
+			console.error(`Error fetching summary for ${address}:`, error);
+			throw error;
+		}
+		return data && data.length > 0 ? data[0] : null;
+	},
+
+	async getTransactionsForAddress(address: string, limit: number = 50, offset: number = 0): Promise<TxApi[]> {
+		const client = supabase.client;
+		if (!client) return [];
+		const { data, error } = await client.rpc('get_transactions_for_address', { target_address: address, limit_count: limit, offset_count: offset });
+		if (error) {
+			console.error(`Error fetching transactions for ${address}:`, error);
+			throw error;
+		}
+		return data?.map(dbToApi) || [];
 	},
 };

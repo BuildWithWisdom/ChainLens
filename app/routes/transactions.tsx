@@ -1,9 +1,7 @@
 import type { Route } from "./+types/transactions";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import TxFeed from "../components/TxFeed";
-import Analytics from "../components/Analytics";
-import TransactionChart from "../components/TransactionChart";
+import PaginatedTxFeed from "../components/PaginatedTxFeed";
 import { useState } from "react";
 import TxDetails from "../components/TxDetails";
 import type { TxApi } from "../lib/api";
@@ -28,14 +26,11 @@ export default function TransactionsPage() {
 				<div className="flex flex-col lg:flex-row gap-6">
 					<Sidebar onSearch={setSearchQuery} onFilter={setFilter} />
 					<div className="flex-1">
-						<TxFeed 
-							limit={30} 
+						<PaginatedTxFeed 
 							searchQuery={searchQuery}
 							filter={filter}
 							onSelect={(tx) => { setSelected(tx); setOpen(true); }} 
 						/>
-						<Analytics />
-						<TransactionChart />
 					</div>
 				</div>
 			</main>

@@ -85,7 +85,11 @@ const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit }) => {
               item.address && (
                 <tr key={item.address} className="border-b border-gray-800 hover:bg-gray-800/50">
                   <td className="p-2 font-medium">{index + 1}</td>
-                  <td className="p-2 font-mono text-sm truncate" title={item.address}>{`${item.address.slice(0, 10)}...${item.address.slice(-8)}`}</td>
+                  <td className="p-2 font-mono text-sm truncate">
+                    <a href={`/address/${item.address}`} className="text-cyan-300 hover:underline" title={item.address}>
+                      {`${item.address.slice(0, 10)}...${item.address.slice(-8)}`}
+                    </a>
+                  </td>
                   <td className="p-2 text-right font-mono text-cyan-300">{
                     item.tx_count?.toLocaleString() || 
                     (item.total_volume ? `${parseFloat(item.total_volume.toString()).toFixed(2)} ETH` : '0')

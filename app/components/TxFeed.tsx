@@ -1,49 +1,14 @@
 import { CheckCircleIcon, ArrowPathIcon, XCircleIcon } from "@heroicons/react/24/solid";
-import { useEffect, useState } from "react";
-import { api, type TxApi } from "../lib/api";
-import SkeletonLoader from "./SkeletonLoader";
+import { type TxApi } from "../lib/api";
+import SkeletonLoader from "./SkeletonLoader"; // Keep this import for skeleton loading
 
-export default function TxFeed({ onSelect, limit, searchQuery, filter }: { 
-	onSelect: (tx: TxApi) => void; 
-	limit?: number;
-	searchQuery?: string;
-	filter?: string;
+export default function TxFeed({ onSelect, txs, loading, error, skeletonCount }: {
+	onSelect: (tx: TxApi) => void;
+	txs: TxApi[];
+	loading: boolean;
+	error: string | null;
+	skeletonCount?: number;
 }) {
-	const [txs, setTxs] = useState<TxApi[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
-
-	useEffect(() => {
-		const fetchTransactions = async () => {
-			setLoading(true);
-			try {
-				let result: TxApi[];
-				
-				if (searchQuery && searchQuery.trim()) {
-					result = await api.searchTransactions(searchQuery, limit || 50);
-				} else if (filter && filter !== 'all') {
-					result = await api.filterTransactions(filter, limit || 50);
-				} else {
-					result = await api.getLatestTransactions(limit || 50);
-				}
-				
-				setTxs(result);
-				setError(null);
-			} catch (e) {
-				setError("Could not load transactions. The data feed may be down.");
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		// Fetch immediately
-		fetchTransactions();
-
-		// Set up polling for latest transactions
-		const interval = setInterval(fetchTransactions, 6000); // 6 seconds
-
-		return () => clearInterval(interval);
-	}, [limit, searchQuery, filter]);
 
 	const iconFor = (status: TxApi["status"]) => {
 		switch (status) {
@@ -58,7 +23,7 @@ export default function TxFeed({ onSelect, limit, searchQuery, filter }: {
 
 	const renderSkeletons = () => (
 		<div className="space-y-4">
-			{[...Array(limit || 3)].map((_, i) => (
+			{[...Array(skeletonCount || 3)].map((_, i) => (
 				<div key={i} className="w-full text-left rounded-2xl bg-gray-900 border border-gray-800 p-4 shadow-sm">
 					<div className="flex items-center gap-4">
 						<SkeletonLoader className="h-6 w-6 rounded-full" />
@@ -83,7 +48,7 @@ export default function TxFeed({ onSelect, limit, searchQuery, filter }: {
 				{loading && txs.length === 0 ? (
 					renderSkeletons()
 				) : (
-					txs.map((tx) => (
+					Array.isArray(txs) && txs.map((tx) => (
 						<button
 							key={tx.id}
 							onClick={() => onSelect(tx)}
@@ -99,9 +64,9 @@ export default function TxFeed({ onSelect, limit, searchQuery, filter }: {
 									<div>
 										<p className="text-gray-400">From / To</p>
 										<div className="flex items-center gap-1 text-gray-200 font-medium">
-											<span className="truncate max-w-[60px]">{tx.from}</span>
+											<a href={`/address/${tx.from}`} className="truncate max-w-[60px] text-cyan-300 hover:underline">{tx.from}</a>
 											<span>→</span>
-											<span className="truncate max-w-[60px]">{tx.to ?? "(contract creation)"}</span>
+											<a href={`/address/${tx.to}`} className="truncate max-w-[60px] text-cyan-300 hover:underline">{tx.to ?? "(contract creation)"}</a>
 										</div>
 									</div>
 									<div className="justify-self-end">

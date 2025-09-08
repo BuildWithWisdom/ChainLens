@@ -6,4 +6,5 @@ export default [
 	route("/transaction/:hash", "routes/transaction-details.tsx"),
 	route("/leaderboard", "routes/leaderboard.tsx"),
 	route("/about", "routes/about.tsx"),
+	route("/address/:hash", "routes/address-details.tsx"),
 ] satisfies RouteConfig;
