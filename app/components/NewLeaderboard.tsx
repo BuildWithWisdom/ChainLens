@@ -6,12 +6,13 @@ import SkeletonLoader from './SkeletonLoader';
 
 interface LeaderboardProps {
   limit: number;
+  isHomepage?: boolean; // New prop
 }
 
 type Tab = 'senders' | 'receivers' | 'volume';
 type TimeFilter = 1 | 7 | 30;
 
-const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit }) => {
+const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit, isHomepage }) => {
   const [activeTab, setActiveTab] = useState<Tab>('senders');
   const [timeFilter, setTimeFilter] = useState<TimeFilter>(7);
   const [data, setData] = useState<Record<Tab, any[]>>({
@@ -108,7 +109,7 @@ const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit }) => {
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg sm:text-xl font-semibold text-cyan-400">Leaderboards</h3>
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex items-center gap-2 text-sm">
+          <div className={classnames("flex items-center gap-2 text-sm", { "hidden sm:flex": isHomepage })}>
             <button onClick={() => setTimeFilter(1)} className={classnames('px-3 py-1 rounded-md', { 'bg-cyan-500/90 text-gray-900': timeFilter === 1, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 1 })}>24H</button>
             <button onClick={() => setTimeFilter(7)} className={classnames('px-3 py-1 rounded-md', { 'bg-cyan-500/90 text-gray-900': timeFilter === 7, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 7 })}>7D</button>
             <button onClick={() => setTimeFilter(30)} className={classnames('px-3 py-1 rounded-md', { 'bg-cyan-500/90 text-gray-900': timeFilter === 30, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 30 })}>30D</button>

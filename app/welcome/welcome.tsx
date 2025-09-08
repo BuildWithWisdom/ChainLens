@@ -77,7 +77,7 @@ export function Welcome() {
 					</div>
 				</div>
 				<TransactionChart />
-				<NewLeaderboard limit={3} />
+				<NewLeaderboard limit={3} isHomepage={true} />
 			</main>
 			<TxDetails open={open} onClose={() => setOpen(false)} tx={selected} />
 		</div>
