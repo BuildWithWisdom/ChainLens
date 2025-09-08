@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router";
 import { api, type TxApi } from "../lib/api";
 import Navbar from "../components/Navbar";
 import { ArrowLeftIcon, CheckCircleIcon, ArrowPathIcon, XCircleIcon } from "@heroicons/react/24/solid";
+import SkeletonLoader from "../components/SkeletonLoader";
 
 export function meta() {
   return [
@@ -64,6 +65,19 @@ export default function TransactionDetailsPage() {
     }
   };
 
+  const renderSkeleton = () => (
+    <div className="rounded-2xl bg-gray-900 border border-gray-800 p-6 text-gray-200">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+        {[...Array(12)].map((_, i) => (
+          <div key={i}>
+            <SkeletonLoader className="h-4 w-1/3 mb-2" />
+            <SkeletonLoader className="h-5 w-full" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gray-950 text-gray-200">
       <Navbar />
@@ -78,9 +92,7 @@ export default function TransactionDetailsPage() {
         <h1 className="text-3xl font-bold text-white mb-6">Transaction Details</h1>
 
         {loading && (
-          <div className="rounded-2xl bg-gray-900 border border-gray-800 p-6 text-gray-400 text-center">
-            Loading transaction details...
-          </div>
+          renderSkeleton()
         )}
 
         {error && (

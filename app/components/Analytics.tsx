@@ -9,12 +9,11 @@ export default function Analytics() {
 		activeAddresses: 0,
 		totalTxs: 0,
 	});
-	const [loading, setLoading] = useState(true);
+	const [initialLoading, setInitialLoading] = useState(true); // New state for initial load
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		const updateStats = async () => {
-			setLoading(true);
 			try {
 				const analytics = await api.getAnalytics();
 				setStats(analytics);
@@ -23,7 +22,7 @@ export default function Analytics() {
 				console.error('Failed to update analytics:', error);
 				setError("Analytics data is currently unavailable.");
 			} finally {
-				setLoading(false);
+				setInitialLoading(false); // Set to false after initial load
 			}
 		};
 
@@ -37,7 +36,7 @@ export default function Analytics() {
 	const renderStat = (label: string, value: string | number) => (
 		<div className="rounded-2xl bg-gradient-to-br from-cyan-800/30 to-slate-800/30 border border-gray-800 p-6">
 			<p className="text-sm text-gray-300">{label}</p>
-			{loading ? (
+			{(initialLoading || stats.totalTxs === 0) ? (
 				<SkeletonLoader className="h-8 w-3/4 mt-2" />
 			) : (
 				<p className="mt-2 text-3xl font-semibold text-cyan-400">{value}</p>
