@@ -66,14 +66,14 @@ export default function AboutPage() {
               Chainlens is an open-source project driven by the community. Your support helps us maintain and develop new features. If you find Chainlens useful, please consider donating or contributing to the project.
             </p>
             <p className="text-lg text-gray-300 leading-relaxed">
-              <strong>Donation Address:</strong> <code style={{ backgroundColor: '#333', padding: '2px 4px', borderRadius: '4px' }}>[Your Somnia Wallet Address Here]</code> (Replace with actual address)
+              <strong>Donation Address:</strong> <code style={{ backgroundColor: '#333', padding: '2px 4px', borderRadius: '4px' }}>0xe9C9A98747d9f749E03508bce18010dc2Fa0Fe31</code>
             </p>
             <p className="text-lg text-gray-300 leading-relaxed">
-              <strong>Contribute:</strong> We welcome contributions from developers, designers, and content creators. Find us on GitHub: <a href="[Your GitHub Repo URL]" target="_blank" rel="noopener noreferrer" style={{ backgroundColor: '#333', padding: '2px 4px', borderRadius: '4px' }}>[Your GitHub Repo Name]</a> (Replace with actual GitHub URL)
+              <strong>Contribute:</strong> We welcome contributions from developers, designers, and content creators. Find us on GitHub: <a href="https://github.com/BuildWithWisdom/ChainLens" target="_blank" rel="noopener noreferrer" style={{ backgroundColor: '#333', padding: '2px 4px', borderRadius: '4px' }}>Chainlens</a>
             </p>
           </section>
-        </div> {/* Closing max-w-4xl div */}
-      </main> {/* Closing main tag */}
+        </div>
+      </main> 
     </div> 
   );
 }
