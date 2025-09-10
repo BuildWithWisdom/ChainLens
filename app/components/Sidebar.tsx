@@ -34,7 +34,7 @@ export default function Sidebar({ onSearch, onFilter }: {
 				<div className="rounded-2xl bg-gray-900 border border-gray-800 p-4">
 					<h3 className="text-sm font-semibold text-gray-300 mb-3">Filters</h3>
 					<div className="space-y-3 text-sm text-gray-300">
-						<label className="flex items-center gap-3">
+						<label className="flex items-center gap-3 cursor-pointer">
 							<input 
 								type="radio" 
 								name="filter" 
@@ -44,7 +44,7 @@ export default function Sidebar({ onSearch, onFilter }: {
 							/> 
 							All
 						</label>
-						<label className="flex items-center gap-3">
+						<label className="flex items-center gap-3 cursor-pointer">
 							<input 
 								type="radio" 
 								name="filter" 
@@ -54,7 +54,7 @@ export default function Sidebar({ onSearch, onFilter }: {
 							/> 
 							Token Transfers
 						</label>
-						<label className="flex items-center gap-3">
+						<label className="flex items-center gap-3 cursor-pointer">
 							<input 
 								type="radio" 
 								name="filter" 
@@ -64,7 +64,7 @@ export default function Sidebar({ onSearch, onFilter }: {
 							/> 
 							Contract Calls
 						</label>
-						<label className="flex items-center gap-3">
+						<label className="flex items-center gap-3 cursor-pointer">
 							<input 
 								type="radio" 
 								name="filter" 

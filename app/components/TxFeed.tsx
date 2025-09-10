@@ -2,10 +2,11 @@ import { CheckCircleIcon, ArrowPathIcon, XCircleIcon } from "@heroicons/react/24
 import { type TxApi } from "../lib/api";
 import SkeletonLoader from "./SkeletonLoader"; // Keep this import for skeleton loading
 
-export default function TxFeed({ onSelect, txs, loading, error, skeletonCount }: {
+export default function TxFeed({ onSelect, txs, loading, loadingMore, error, skeletonCount }: {
 	onSelect: (tx: TxApi) => void;
 	txs: TxApi[];
 	loading: boolean;
+	loadingMore?: boolean;
 	error: string | null;
 	skeletonCount?: number;
 }) {
@@ -48,35 +49,38 @@ export default function TxFeed({ onSelect, txs, loading, error, skeletonCount }:
 				{loading && txs.length === 0 ? (
 					renderSkeletons()
 				) : (
-					Array.isArray(txs) && txs.map((tx) => (
-						<button
+					<>
+						{Array.isArray(txs) && txs.map((tx) => (
+							<button
 							key={tx.id}
 							onClick={() => onSelect(tx)}
-							className="w-full text-left rounded-2xl bg-gray-900 border border-gray-800 hover:border-gray-700 transition-colors p-4 shadow-sm"
+							className="w-full text-left rounded-2xl bg-gray-900 border border-gray-800 hover:border-gray-700 transition-colors p-4 shadow-sm cursor-pointer"
 						>
-							<div className="flex items-center gap-4">
-								{iconFor(tx.status)}
-								<div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
-									<div>
-										<p className="text-gray-400">Tx Hash</p>
-										<p className="text-gray-200 font-medium">{tx.hash}</p>
-									</div>
-									<div>
-										<p className="text-gray-400">From / To</p>
-										<div className="flex items-center gap-1 text-gray-200 font-medium">
-											<a href={`/address/${tx.from}`} className="truncate max-w-[60px] text-cyan-300 hover:underline">{tx.from}</a>
-											<span>→</span>
-											<a href={`/address/${tx.to}`} className="truncate max-w-[60px] text-cyan-300 hover:underline">{tx.to ?? "(contract creation)"}</a>
+								<div className="flex items-center gap-4">
+									{iconFor(tx.status)}
+									<div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
+										<div>
+											<p className="text-gray-400">Tx Hash</p>
+											<p className="text-gray-200 font-medium">{tx.hash}</p>
+										</div>
+										<div>
+											<p className="text-gray-400">From / To</p>
+											<div className="flex items-center gap-1 text-gray-200 font-medium">
+												<a href={`/address/${tx.from}`} className="truncate max-w-[60px] text-cyan-300 hover:underline">{tx.from}</a>
+												<span>→</span>
+												<a href={`/address/${tx.to}`} className="truncate max-w-[60px] text-cyan-300 hover:underline">{tx.to ?? "(contract creation)"}</a>
+											</div>
+										</div>
+										<div className="justify-self-end">
+											<p className="text-gray-400 text-right">Value</p>
+											<p className="text-gray-200 font-semibold">{tx.value}</p>
 										</div>
 									</div>
-									<div className="justify-self-end">
-										<p className="text-gray-400 text-right">Value</p>
-										<p className="text-gray-200 font-semibold">{tx.value}</p>
-									</div>
 								</div>
-							</div>
-						</button>
-					))
+							</button>
+						))}
+						{loadingMore && renderSkeletons()}
+					</>
 				)}
 			</div>
 		</section>

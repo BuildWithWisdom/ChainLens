@@ -110,9 +110,9 @@ const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit, isHomepage }) => {
         <h3 className="text-lg sm:text-xl font-semibold text-cyan-400">Leaderboards</h3>
         <div className="flex items-center gap-4">
           <div className={classnames("flex items-center gap-2 text-sm", { "hidden sm:flex": isHomepage })}>
-            <button onClick={() => setTimeFilter(1)} className={classnames('px-1.5 py-1 sm:px-3 sm:py-1 rounded-md', { 'bg-cyan-500/90 text-gray-900': timeFilter === 1, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 1 })}>24H</button>
-            <button onClick={() => setTimeFilter(7)} className={classnames('px-1.5 py-1 sm:px-3 sm:py-1 rounded-md', { 'bg-cyan-500/90 text-gray-900': timeFilter === 7, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 7 })}>7D</button>
-            <button onClick={() => setTimeFilter(30)} className={classnames('px-1.5 py-1 sm:px-3 sm:py-1 rounded-md', { 'bg-cyan-500/90 text-gray-900': timeFilter === 30, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 30 })}>30D</button>
+            <button onClick={() => setTimeFilter(1)} className={classnames('px-1.5 py-1 sm:px-3 sm:py-1 rounded-md cursor-pointer', { 'bg-cyan-500/90 text-gray-900': timeFilter === 1, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 1 })}>24H</button>
+            <button onClick={() => setTimeFilter(7)} className={classnames('px-1.5 py-1 sm:px-3 sm:py-1 rounded-md cursor-pointer', { 'bg-cyan-500/90 text-gray-900': timeFilter === 7, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 7 })}>7D</button>
+            <button onClick={() => setTimeFilter(30)} className={classnames('px-1.5 py-1 sm:px-3 sm:py-1 rounded-md cursor-pointer', { 'bg-cyan-500/90 text-gray-900': timeFilter === 30, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 30 })}>30D</button>
           </div>
           {limit <= 5 && (
               <a href="/leaderboard" className="inline-flex items-center rounded-md bg-cyan-500/90 hover:bg-cyan-400 px-3 py-1 text-sm font-medium text-gray-900">View All</a>
@@ -124,7 +124,7 @@ const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit, isHomepage }) => {
           <button
             onClick={() => setActiveTab('senders')}
             className={classnames(
-              'px-3 py-2 font-medium text-sm rounded-t-md',
+              'px-3 py-2 font-medium text-sm rounded-t-md cursor-pointer',
               {
                 'bg-gray-800 text-cyan-400': activeTab === 'senders',
                 'text-gray-400 hover:text-white': activeTab !== 'senders',
@@ -136,7 +136,7 @@ const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit, isHomepage }) => {
           <button
             onClick={() => setActiveTab('receivers')}
             className={classnames(
-              'px-3 py-2 font-medium text-sm rounded-t-md',
+              'px-3 py-2 font-medium text-sm rounded-t-md cursor-pointer',
               {
                 'bg-gray-800 text-cyan-400': activeTab === 'receivers',
                 'text-gray-400 hover:text-white': activeTab !== 'receivers',
@@ -148,7 +148,7 @@ const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit, isHomepage }) => {
           <button
             onClick={() => setActiveTab('volume')}
             className={classnames(
-              'px-3 py-2 font-medium text-sm rounded-t-md',
+              'px-3 py-2 font-medium text-sm rounded-t-md cursor-pointer',
               {
                 'bg-gray-800 text-cyan-400': activeTab === 'volume',
                 'text-gray-400 hover:text-white': activeTab !== 'volume',

@@ -12,13 +12,16 @@ export default function PaginatedTxFeed({ onSelect, searchQuery, filter }: {
 	console.log("PaginatedTxFeed rendered");
 	const [txs, setTxs] = useState<TxApi[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [loadingMore, setLoadingMore] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [page, setPage] = useState(0);
 	const [hasMore, setHasMore] = useState(true);
 
 	const fetchTransactions = async (currentPage: number, currentSearchQuery: string, currentFilter: string) => {
 		console.log(`fetchTransactions called for page: ${currentPage}`);
-		setLoading(true);
+		if (currentPage === 0) {
+			setLoading(true);
+		}
 		try {
 			const offset = currentPage * TXS_PER_PAGE;
 			let result: TxApi[];
@@ -47,6 +50,7 @@ export default function PaginatedTxFeed({ onSelect, searchQuery, filter }: {
 			setError("Could not load transactions. The data feed may be down.");
 		} finally {
 			setLoading(false);
+			setLoadingMore(false);
 		}
 	};
 
@@ -61,6 +65,7 @@ export default function PaginatedTxFeed({ onSelect, searchQuery, filter }: {
 	const loadMoreTxs = () => {
 		console.log("loadMoreTxs called");
 		if (hasMore && !loading) {
+			setLoadingMore(true);
 			const nextPage = page + 1;
 			console.log(`Setting page to: ${nextPage}`);
 			setPage(nextPage);
@@ -75,6 +80,7 @@ export default function PaginatedTxFeed({ onSelect, searchQuery, filter }: {
 			<TxFeed 
 				txs={txs}
 				loading={loading}
+				loadingMore={loadingMore}
 				error={error}
 				onSelect={onSelect} 
 				skeletonCount={TXS_PER_PAGE}
@@ -83,7 +89,7 @@ export default function PaginatedTxFeed({ onSelect, searchQuery, filter }: {
 				<div className="text-center mt-4">
 					<button
 						onClick={loadMoreTxs}
-						className="inline-flex items-center rounded-xl bg-cyan-500/90 hover:bg-cyan-400 px-4 py-2 text-sm font-medium text-gray-900"
+						className="inline-flex items-center rounded-xl bg-cyan-500/90 hover:bg-cyan-400 px-4 py-2 text-sm font-medium text-gray-900 cursor-pointer"
 					>
 						Load More
 					</button>

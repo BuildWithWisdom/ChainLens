@@ -83,7 +83,7 @@ export default function TransactionDetailsPage() {
       <Navbar />
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-20 pb-10">
         <div className="mb-6">
-          <button onClick={() => navigate(-1)} className="inline-flex items-center text-cyan-400 hover:text-cyan-300 transition-colors">
+          <button onClick={() => navigate(-1)} className="inline-flex items-center text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer">
             <ArrowLeftIcon className="h-5 w-5 mr-2" />
             Back
           </button>
