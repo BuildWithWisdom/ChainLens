@@ -1,5 +1,13 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
+import type { Route } from "./+types/about";
+
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "About | Chainlens" },
+    { name: "description", content: "Learn more about Chainlens, the real-time explorer for the Somnia blockchain." },
+  ];
+}
 
 export default function AboutPage() {
   return (
