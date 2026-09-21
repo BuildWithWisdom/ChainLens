@@ -3,20 +3,25 @@ import { supabase, type Transaction } from './supabase';
 export type TxApi = {
 	id: string;
 	hash: string; // truncated for display
-	fullHash: string; // full hash for deduplication
+	fullHash: string; // full signature for deduplication
 	from: string;
 	to: string | null;
 	status: "success" | "pending" | "failed";
-	value: string; // formatted ETH string "1.23 ETH"
-	blockNumber?: number;
+	value: string; // formatted SOL string "1.23 SOL"
+	blockNumber?: number; // slot
 	timestamp?: string;
-	gasUsed?: string;
-	gasPrice?: string;
-	inputData?: string;
-	nonce?: number;
-	type?: string;
-	chainId?: number;
+	gasUsed?: string; // compute units consumed
+	fee?: string; // formatted fee string "0.000005 SOL"
+	inputData?: string; // program ids, comma-separated
 };
+
+const LAMPORTS_PER_SOL = 1_000_000_000;
+
+export function formatSol(lamports: number | string | null | undefined, maxDecimals = 9): string {
+	if (lamports === null || lamports === undefined) return "N/A";
+	const sol = Number(lamports) / LAMPORTS_PER_SOL;
+	return `${parseFloat(sol.toFixed(maxDecimals))} SOL`;
+}
 
 function truncateAddress(address: string): string {
 	if (!address || address.length <= 10) return address;
@@ -32,15 +37,12 @@ function dbToApi(tx: Transaction): TxApi {
 		from: tx.from_address,
 		to: tx.to_address ? tx.to_address : null,
 		status: tx.status as "success" | "pending" | "failed",
-		value: `${tx.value_eth} ETH`,
+		value: `${tx.value_sol} SOL`,
 		blockNumber: tx.block_number,
 		timestamp: tx.timestamp,
 		gasUsed: tx.gas_used?.toString(),
-		gasPrice: tx.gas_price?.toString(),
+		fee: tx.fee_lamports !== null && tx.fee_lamports !== undefined ? formatSol(tx.fee_lamports) : undefined,
 		inputData: tx.input_data || undefined,
-		nonce: tx.nonce || undefined,
-		type: tx.type?.toString() || undefined,
-		chainId: tx.chain_id || undefined,
 	};
 }
 
@@ -109,10 +111,10 @@ export const api = {
 
 		switch (filter) {
 			case 'token_transfers':
-				query = query.gt('value_eth', 0);
+				query = query.gt('value_sol', 0);
 				break;
 			case 'contract_calls':
-				query = query.eq('value_eth', 0);
+				query = query.eq('value_sol', 0);
 				break;
 			case 'failed':
 				query = query.eq('status', 'failed');
@@ -132,7 +134,7 @@ export const api = {
 		return data?.map(dbToApi) || [];
 	},
 
-	// Get a single transaction by its full hash
+	// Get a single transaction by its full signature
 	async getTxByFullHash(hash: string): Promise<TxApi | null> {
 		const client = supabase.client;
 		if (!client) {

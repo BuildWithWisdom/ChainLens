@@ -5,7 +5,7 @@ import type { Route } from "./+types/about";
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "About | Chainlens" },
-    { name: "description", content: "Learn more about Chainlens, the real-time explorer for the Somnia blockchain." },
+    { name: "description", content: "Learn more about Chainlens, the real-time explorer for Solana." },
   ];
 }
 
@@ -19,7 +19,7 @@ export default function AboutPage() {
           <section className="space-y-4">
             <h2 className="text-3xl font-semibold text-white">Our Mission</h2>
             <p className="text-lg text-gray-300 leading-relaxed">
-              Our mission is to empower Somnia builders and users with a practical, intuitive, and transparent tool that enhances trust, usability, and ultimately, the adoption of the network. By making on-chain activity visible and accessible, Chainlens lowers the barrier for both technical and non-technical users to engage with Somnia.
+              Our mission is to empower Solana builders and users with a practical, intuitive, and transparent tool that enhances trust, usability, and ultimately, the adoption of the network. By making on-chain activity visible and accessible, Chainlens lowers the barrier for both technical and non-technical users to engage with Solana.
             </p>
           </section>
 
@@ -28,11 +28,11 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="bg-gray-900/50 rounded-xl p-6 shadow-lg space-y-3">
                 <h3 className="text-xl font-semibold text-cyan-400">Real-time Transaction Feed</h3>
-                <p className="text-gray-300 leading-relaxed">Stay updated with the latest transactions as they happen on the Somnia network. Our real-time feed provides instant insights into network activity, ensuring you never miss a beat.</p>
+                <p className="text-gray-300 leading-relaxed">Stay updated with the latest transactions as they happen on the Solana network. Our real-time feed provides instant insights into network activity, ensuring you never miss a beat.</p>
               </div>
               <div className="bg-gray-900/50 rounded-xl p-6 shadow-lg space-y-3">
                 <h3 className="text-xl font-semibold text-cyan-400">Detailed Transaction View</h3>
-                <p className="text-gray-300 leading-relaxed">Dive deep into every transaction with comprehensive details including sender, receiver, value, gas usage, block number, and more. Understand the full context of each on-chain event.</p>
+                <p className="text-gray-300 leading-relaxed">Dive deep into every transaction with comprehensive details including fee payer, recipient, value, fee usage, slot, and more. Understand the full context of each on-chain event.</p>
               </div>
               <div className="bg-gray-900/50 rounded-xl p-6 shadow-lg space-y-3">
                 <h3 className="text-xl font-semibold text-cyan-400">Intelligent Search & Filtering</h3>
@@ -40,7 +40,7 @@ export default function AboutPage() {
               </div>
               <div className="bg-gray-900/50 rounded-xl p-6 shadow-lg space-y-3">
                 <h3 className="text-xl font-semibold text-cyan-400">Network Analytics Dashboard</h3>
-                <p className="text-gray-300 leading-relaxed">Gain valuable insights into the health and performance of the Somnia network. Monitor key metrics like Transactions Per Second (TPS), blocks per minute, and active addresses through our intuitive analytics dashboard.</p>
+                <p className="text-gray-300 leading-relaxed">Gain valuable insights into the health and performance of the Solana network. Monitor key metrics like Transactions Per Second (TPS), slots per minute, and active addresses through our intuitive analytics dashboard.</p>
               </div>
               <div className="bg-gray-900/50 rounded-xl p-6 shadow-lg space-y-3">
                 <h3 className="text-xl font-semibold text-cyan-400">Transaction Volume Chart</h3>
@@ -48,7 +48,7 @@ export default function AboutPage() {
               </div>
               <div className="bg-gray-900/50 rounded-xl p-6 shadow-lg space-y-3">
                 <h3 className="text-xl font-semibold text-cyan-400">User-Friendly Interface</h3>
-                <p className="text-gray-300 leading-relaxed">Navigate the complexities of blockchain data with ease. Chainlens is designed with a clean, intuitive interface that makes exploring the Somnia network accessible to everyone, regardless of technical expertise.</p>
+                <p className="text-gray-300 leading-relaxed">Navigate the complexities of blockchain data with ease. Chainlens is designed with a clean, intuitive interface that makes exploring the Solana network accessible to everyone, regardless of technical expertise.</p>
               </div>
             </div>
           </section>
@@ -56,15 +56,15 @@ export default function AboutPage() {
           <section className="space-y-4">
             <h2 className="text-3xl font-semibold text-white">Roadmap & Future Plans</h2>
             <p className="text-lg text-gray-300 leading-relaxed">
-              We are continuously working to enhance Chainlens and provide even more valuable insights into the Somnia network. Our future plans include:
+              We are continuously working to enhance Chainlens and provide even more valuable insights into the Solana network. Our future plans include:
             </p>
             <ul className="list-disc list-inside text-gray-300 space-y-2">
               <li>Advanced analytics and reporting tools.</li>
               <li>User accounts and personalized dashboards.</li>
-              <li>Join Pool (On-chain Lottery/Prize Pool) on Somnia.</li>
-              <li>Try Somnia gas free (Relayer Integration).</li>
+              <li>Join Pool (On-chain Lottery/Prize Pool) on Solana.</li>
+              <li>Fee-free onboarding (Relayer Integration).</li>
               <li>API access for developers.</li>
-              <li>Integration with other Somnia ecosystem tools.</li>
+              <li>Integration with other Solana ecosystem tools.</li>
             </ul>
           </section>
 

@@ -8,15 +8,8 @@ import SkeletonLoader from "../components/SkeletonLoader";
 export function meta() {
   return [
     { title: "Transaction Details" },
-    { name: "description", content: "Detailed view of a blockchain transaction" },
+    { name: "description", content: "Detailed view of a Solana transaction" },
   ];
-}
-
-function formatGasPrice(gasPrice?: string): string {
-  if (!gasPrice) return "N/A";
-  const gasPriceWei = BigInt(gasPrice);
-  const gwei = Number(gasPriceWei) / 1e9;
-  return `${gwei.toFixed(2)} Gwei`;
 }
 
 export default function TransactionDetailsPage() {
@@ -128,7 +121,7 @@ export default function TransactionDetailsPage() {
                 <p>{transaction.value}</p>
               </div>
               <div>
-                <p className="text-gray-400">Block Number</p>
+                <p className="text-gray-400">Slot</p>
                 <p>{transaction.blockNumber}</p>
               </div>
               <div>
@@ -136,28 +129,16 @@ export default function TransactionDetailsPage() {
                 <p>{transaction.timestamp ? new Date(transaction.timestamp).toLocaleString() : 'N/A'}</p>
               </div>
               <div>
-                <p className="text-gray-400">Gas Used</p>
+                <p className="text-gray-400">Fee</p>
+                <p>{transaction.fee ?? 'N/A'}</p>
+              </div>
+              <div>
+                <p className="text-gray-400">Compute Units</p>
                 <p>{transaction.gasUsed ? Number(transaction.gasUsed).toLocaleString() : 'N/A'}</p>
               </div>
               <div>
-                <p className="text-gray-400">Gas Price</p>
-                <p>{formatGasPrice(transaction.gasPrice)}</p>
-              </div>
-              <div>
-                <p className="text-gray-400">Input Data</p>
+                <p className="text-gray-400">Programs</p>
                 <p className="break-all font-mono">{transaction.inputData ?? 'N/A'}</p>
-              </div>
-              <div>
-                <p className="text-gray-400">Nonce</p>
-                <p>{transaction.nonce ?? 'N/A'}</p>
-              </div>
-              <div>
-                <p className="text-gray-400">Type</p>
-                <p>{transaction.type ?? 'N/A'}</p>
-              </div>
-              <div>
-                <p className="text-gray-400">Chain ID</p>
-                <p>{transaction.chainId ?? 'N/A'}</p>
               </div>
             </div>
           </div>

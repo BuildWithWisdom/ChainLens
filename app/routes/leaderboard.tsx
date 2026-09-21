@@ -6,7 +6,7 @@ import type { Route } from "./+types/leaderboard";
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Leaderboard | Chainlens" },
-    { name: "description", content: "View the top senders, receivers, and volume on the Somnia blockchain." },
+    { name: "description", content: "View the top senders, receivers, and volume on Solana." },
   ];
 }
 

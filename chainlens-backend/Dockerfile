@@ -11,4 +11,5 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY package.json .
 EXPOSE 3000
-CMD ["npm", "run", "start:prod"]
+# Exec form (no npm wrapper) so Cloud Run SIGTERM reaches node for graceful shutdown
+CMD ["node", "dist/main"]

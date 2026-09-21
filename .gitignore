@@ -1,11 +1,10 @@
 .DS_Store
-/node_modules/
-
-# React Router
-/.react-router/
-/build/
+node_modules/
+dist/
+build/
+.react-router/
+coverage/
 .env
-<<<<<<< HEAD
-=======
-Dockerfile
->>>>>>> feature/add-backend
+.env.local
+*.log
+.vscode/

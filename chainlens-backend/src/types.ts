@@ -1,18 +1,15 @@
 export interface Transaction {
-    hash: string;
-    from_address: string;
-    to_address: string;
-    value_wei: string;
-    value_eth: number;
+    hash: string; // Solana signature
+    from_address: string; // fee payer
+    to_address: string | null; // SOL transfer recipient, null for program interactions
+    value_lamports: string;
+    value_sol: number;
+    fee_lamports: number;
     status: string;
-    block_number?: number;
-    block_hash?: string;
+    block_number?: number; // slot
+    block_hash?: string | null; // blockhash
     transaction_index?: number;
-    gas_used?: number;
-    gas_price?: number;
+    gas_used?: number | null; // compute units consumed
     timestamp: string;
-    input_data?: string;
-    nonce?: number;
-    type?: number;
-    chain_id?: number;
+    input_data?: string | null; // top-level program ids, comma-separated
 }

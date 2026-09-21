@@ -52,7 +52,7 @@ export default function Sidebar({ onSearch, onFilter }: {
 								onChange={() => handleFilterChange("token_transfers")}
 								className="accent-cyan-500"
 							/> 
-							Token Transfers
+							SOL Transfers
 						</label>
 						<label className="flex items-center gap-3 cursor-pointer">
 							<input 
@@ -62,7 +62,7 @@ export default function Sidebar({ onSearch, onFilter }: {
 								onChange={() => handleFilterChange("contract_calls")}
 								className="accent-cyan-500"
 							/> 
-							Contract Calls
+							Program Interactions
 						</label>
 						<label className="flex items-center gap-3 cursor-pointer">
 							<input 

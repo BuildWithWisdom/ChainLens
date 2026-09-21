@@ -25,22 +25,19 @@ export const supabase = {
 
 export type Transaction = {
   id: string;
-  hash: string;
-  from_address: string;
-  to_address: string | null;
-  value_wei: string;
-  value_eth: number;
+  hash: string; // Solana signature (base58)
+  from_address: string; // fee payer
+  to_address: string | null; // SOL transfer recipient, null for program interactions
+  value_lamports: string;
+  value_sol: number;
+  fee_lamports: number | null;
   status: string;
-  block_number: number;
-  block_hash: string | null;
+  block_number: number; // slot
+  block_hash: string | null; // blockhash
   transaction_index: number | null;
-  gas_used: string | null;
-  gas_price: string | null;
+  gas_used: string | number | null; // compute units consumed
   timestamp: string;
   created_at: string;
   updated_at: string;
-  input_data?: string | null;
-  nonce?: number | null;
-  type?: string | null;
-  chain_id?: number | null;
+  input_data?: string | null; // top-level program ids, comma-separated
 };

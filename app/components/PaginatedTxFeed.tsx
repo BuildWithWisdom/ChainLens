@@ -4,12 +4,11 @@ import TxFeed from "./TxFeed";
 
 const TXS_PER_PAGE = 10;
 
-export default function PaginatedTxFeed({ onSelect, searchQuery, filter }: {
+export default function PaginatedTxFeed({ onSelect, searchQuery = "", filter = "all" }: {
 	onSelect: (tx: TxApi) => void;
 	searchQuery?: string;
 	filter?: string;
 }) {
-	console.log("PaginatedTxFeed rendered");
 	const [txs, setTxs] = useState<TxApi[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [loadingMore, setLoadingMore] = useState(false);
@@ -18,7 +17,6 @@ export default function PaginatedTxFeed({ onSelect, searchQuery, filter }: {
 	const [hasMore, setHasMore] = useState(true);
 
 	const fetchTransactions = async (currentPage: number, currentSearchQuery: string, currentFilter: string) => {
-		console.log(`fetchTransactions called for page: ${currentPage}`);
 		if (currentPage === 0) {
 			setLoading(true);
 		}
@@ -34,17 +32,13 @@ export default function PaginatedTxFeed({ onSelect, searchQuery, filter }: {
 				result = await api.getLatestTransactions(TXS_PER_PAGE, offset);
 			}
 			
-			console.log(`API returned ${result.length} transactions for page ${currentPage}.`);
-			
 			setTxs(prevTxs => {
 				const newTxs = currentPage === 0 ? result : [...prevTxs, ...result];
 				const uniqueTxs = Array.from(new Map(newTxs.map(tx => [tx.id, tx])).values());
-				console.log(`Total transactions in state after setTxs: ${uniqueTxs.length}`);
 				return uniqueTxs;
 			});
 			const newHasMore = result.length === TXS_PER_PAGE;
 			setHasMore(newHasMore);
-			console.log(`hasMore set to: ${newHasMore}`);
 			setError(null);
 		} catch (e) {
 			setError("Could not load transactions. The data feed may be down.");
@@ -55,7 +49,6 @@ export default function PaginatedTxFeed({ onSelect, searchQuery, filter }: {
 	};
 
 	useEffect(() => {
-		console.log("useEffect [searchQuery, filter] triggered");
 		setPage(0); // Always reset page to 0 when search/filter changes
 		setHasMore(true); // Assume hasMore until first fetch
 		setTxs([]); // Clear transactions on new search/filter
@@ -63,15 +56,11 @@ export default function PaginatedTxFeed({ onSelect, searchQuery, filter }: {
 	}, [searchQuery, filter]);
 
 	const loadMoreTxs = () => {
-		console.log("loadMoreTxs called");
 		if (hasMore && !loading) {
 			setLoadingMore(true);
 			const nextPage = page + 1;
-			console.log(`Setting page to: ${nextPage}`);
 			setPage(nextPage);
 			fetchTransactions(nextPage, searchQuery, filter);
-		} else {
-			console.log(`loadMoreTxs not executed. hasMore: ${hasMore}, loading: ${loading}`);
 		}
 	};
 

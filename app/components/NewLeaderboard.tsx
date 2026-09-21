@@ -10,11 +10,12 @@ interface LeaderboardProps {
 }
 
 type Tab = 'senders' | 'receivers' | 'volume';
-type TimeFilter = 1 | 7 | 30;
+
+// Retention is 3 days, so leaderboards cover the last 24 hours.
+const TIME_FILTER = 1;
 
 const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit, isHomepage }) => {
   const [activeTab, setActiveTab] = useState<Tab>('senders');
-  const [timeFilter, setTimeFilter] = useState<TimeFilter>(7);
   const [data, setData] = useState<Record<Tab, any[]>>({
     senders: [],
     receivers: [],
@@ -29,9 +30,9 @@ const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit, isHomepage }) => {
         setLoading(true);
         setError(null);
         const [senders, receivers, volume] = await Promise.all([
-          api.getTopSenders(limit, timeFilter),
-          api.getTopReceivers(limit, timeFilter),
-          api.getTopVolume(limit, timeFilter),
+          api.getTopSenders(limit, TIME_FILTER),
+          api.getTopReceivers(limit, TIME_FILTER),
+          api.getTopVolume(limit, TIME_FILTER),
         ]);
         setData({ senders, receivers, volume });
       } catch (error) {
@@ -43,7 +44,7 @@ const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit, isHomepage }) => {
     };
 
     fetchData();
-  }, [limit, timeFilter]);
+  }, [limit]);
 
   const renderContent = () => {
     if (loading) {
@@ -93,7 +94,7 @@ const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit, isHomepage }) => {
                   </td>
                   <td className="p-2 text-right font-mono text-cyan-300">{
                     item.tx_count?.toLocaleString() || 
-                    (item.total_volume ? `${parseFloat(item.total_volume.toString()).toFixed(2)} ETH` : '0')
+                    (item.total_volume ? `${parseFloat(item.total_volume.toString()).toFixed(2)} SOL` : '0')
                   }</td>
                 </tr>
               )
@@ -109,11 +110,7 @@ const NewLeaderboard: React.FC<LeaderboardProps> = ({ limit, isHomepage }) => {
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg sm:text-xl font-semibold text-cyan-400">Leaderboards</h3>
         <div className="flex items-center gap-4">
-          <div className={classnames("flex items-center gap-2 text-sm", { "hidden sm:flex": isHomepage })}>
-            <button onClick={() => setTimeFilter(1)} className={classnames('px-1.5 py-1 sm:px-3 sm:py-1 rounded-md cursor-pointer', { 'bg-cyan-500/90 text-gray-900': timeFilter === 1, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 1 })}>24H</button>
-            <button onClick={() => setTimeFilter(7)} className={classnames('px-1.5 py-1 sm:px-3 sm:py-1 rounded-md cursor-pointer', { 'bg-cyan-500/90 text-gray-900': timeFilter === 7, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 7 })}>7D</button>
-            <button onClick={() => setTimeFilter(30)} className={classnames('px-1.5 py-1 sm:px-3 sm:py-1 rounded-md cursor-pointer', { 'bg-cyan-500/90 text-gray-900': timeFilter === 30, 'bg-gray-800/50 hover:bg-gray-700/50': timeFilter !== 30 })}>30D</button>
-          </div>
+          <span className="text-xs text-gray-500">Last 24H</span>
           {limit <= 5 && (
               <a href="/leaderboard" className="inline-flex items-center rounded-md bg-cyan-500/90 hover:bg-cyan-400 px-3 py-1 text-sm font-medium text-gray-900">View All</a>
           )}

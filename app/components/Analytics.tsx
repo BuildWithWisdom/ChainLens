@@ -52,7 +52,7 @@ export default function Analytics() {
 			)}
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 				{renderStat("TPS (est.)", stats.tps)}
-				{renderStat("Blocks (1min)", stats.blocksPerMinute)}
+				{renderStat("Slots (1min)", stats.blocksPerMinute)}
 				{renderStat("Active addresses (1min)", stats.activeAddresses)}
 				{renderStat("Recent txs (1min)", stats.totalTxs)}
 			</div>

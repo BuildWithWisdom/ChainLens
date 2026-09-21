@@ -123,7 +123,7 @@ export default function AddressDetailsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg">
               <p><span className="text-gray-400">Total Sent Transactions:</span> <span className="font-medium text-white">{summary.total_sent_txs?.toLocaleString()}</span></p>
               <p><span className="text-gray-400">Total Received Transactions:</span> <span className="font-medium text-white">{summary.total_received_txs?.toLocaleString()}</span></p>
-              <p><span className="text-gray-400">Total Volume (ETH):</span> <span className="font-medium text-white">{parseFloat(summary.total_volume_eth || 0).toFixed(4)} ETH</span></p>
+              <p><span className="text-gray-400">Total Volume (SOL):</span> <span className="font-medium text-white">{parseFloat(summary.total_volume_sol || 0).toFixed(4)} SOL</span></p>
             </div>
           ) : (
             <p className="text-gray-400">No summary data available for this address.</p>

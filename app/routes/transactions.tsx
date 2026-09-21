@@ -9,7 +9,7 @@ import type { TxApi } from "../lib/api";
 export function meta({}: Route.MetaArgs) {
 	return [
 		{ title: "Transactions | Chainlens" },
-		{ name: "description", content: "Explore real-time transactions on the Somnia blockchain." },
+		{ name: "description", content: "Explore real-time transactions on Solana." },
 	];
 }
 
