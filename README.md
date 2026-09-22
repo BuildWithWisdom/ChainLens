@@ -1,117 +1,131 @@
-# Chainlens: Real-time Solana Explorer
+# ChainLens — Real-time Solana Explorer
 
-![Chainlens Logo](public/logo_128.png)
+ChainLens is a real-time explorer for the Solana blockchain. It indexes recent mainnet activity into a queryable database and presents it through a fast, analytics-focused web interface: live transaction feed, per-transaction and per-address detail views, network health metrics, volume charts, and leaderboards.
 
-## 🚀 Project Overview
+**Live demo:** https://chain-lens.vercel.app
 
-Chainlens is a powerful, real-time blockchain explorer designed specifically for **Solana**. It addresses the critical need for transparent and user-friendly access to on-chain activity, providing unparalleled visibility into transactions, network throughput, and key trends.
+![ChainLens analytics and live transaction feed](public/screenshot1.png)
 
-Our primary motivation for building Chainlens is to empower Solana builders and users with a practical tool that enhances trust, usability, and ultimately, the adoption of the network. By making on-chain activity visible and accessible, Chainlens lowers the barrier for both technical and non-technical users to engage with Solana.
+![ChainLens transaction volume chart and leaderboards](public/screenshot2.png)
 
-## ✨ Features
+## Features
 
-Chainlens goes beyond traditional block explorers by focusing on clarity and actionable insights:
+- **Real-time transaction feed** — sampled mainnet transactions as they are indexed, with status indicators and value in SOL.
+- **Transaction details** — full signature, status, fee payer, recipient, SOL value, slot, timestamp, fee, compute units, and involved programs.
+- **Address pages** — activity summary (sent/received counts, total volume) plus paginated history for any address.
+- **Search and filtering** — find transactions by signature or address; filter by SOL transfers, program interactions, or failed status.
+- **Network analytics** — estimated TPS, slots per minute, active addresses, and recent transaction counts, refreshed continuously.
+- **Volume chart** — hourly transaction volume over the last 24 hours.
+- **Leaderboards** — top senders, receivers, and volumes over the last 24 hours.
 
-- **Real-time Transaction Feed:** See the latest transactions on Solana as they happen.
-- **Detailed Transaction View:** Dive deep into individual transactions, including full signature, status, fee payer/recipient addresses, value, slot, timestamp, fee usage, compute units, and programs.
-- **Intelligent Search & Filtering:** Easily find specific transactions by hash or address, and filter by type (e.g., token transfers, contract calls) or status (e.g., failed).
-- **Network Analytics Dashboard:** Gain immediate insights into Solana's health and activity with real-time metrics:
-  - **TPS (Transactions Per Second):** Estimated network throughput.
-  - **Blocks per Minute:** Rate of new block creation.
-  - **Active Addresses:** Number of unique participants in recent transactions.
-  - **Recent Transactions:** Total transactions in the last minute.
-- **Transaction Volume Chart:** Visualize Solana's transaction activity over the last 24 hours, identifying trends and peak periods.
-- **User-Friendly Interface:** A clean, intuitive UI with a dark theme, designed for optimal readability and ease of use.
+## Architecture
 
-## 💡 Why Chainlens is Unique
+```
+Solana mainnet RPC ──poll──▶ NestJS indexer ──upsert──▶ Supabase (Postgres)
+                                                              │
+Frontend (React Router) ─────────reads (direct + RPC)─────────┘
+```
 
-Unlike generic explorers or direct RPC interactions, Chainlens offers:
+- **Indexer** (`chainlens-backend/`, hosted on Google Cloud Run): every 15 seconds it samples the latest confirmed slot, parses SystemProgram transfers, skips vote-only consensus transactions, and upserts up to `TXS_PER_BLOCK` transactions. A nightly job deletes rows older than `TX_RETENTION_DAYS`, bounding table growth.
+- **Database** (Supabase Postgres): a single `transactions` table plus SQL functions for analytics, volume, leaderboards, and address lookups. The frontend reads with the publishable key under a read-only access policy; the indexer writes with the secret key.
+- **Frontend** (`app/`): server-rendered React app that queries Supabase directly. No custom API layer.
 
-- **Analytics-First Approach:** We don't just display data; we analyze it into meaningful metrics and trends, providing a deeper understanding of network dynamics.
-- **Lightweight & Community-Driven:** Built with extensibility in mind, Chainlens can be easily forked, adapted, and expanded by the Solana community for diverse needs.
-- **Forward-Looking Design:** Our architecture is designed to seamlessly integrate future features like fee-free onboarding and community savings pools, positioning Chainlens as a foundational tool for the network's growth.
+A note on scope: ChainLens is a *sampled* explorer, not an archive node. It stores a slice of recent activity (currently ~10 transactions per sampled slot, 3 days of history). Vote transactions are intentionally excluded.
 
-## 🛠️ Technical Stack
+## Tech Stack
 
-Chainlens is built with a robust and modern technology stack:
+| Layer    | Technology |
+|----------|------------|
+| Frontend | React 19, React Router v7, Tailwind CSS 4, Vite, Chart.js, Supabase JS |
+| Indexer  | NestJS 11, Supabase JS (secret key), scheduled cron tasks |
+| Database | Supabase (PostgreSQL with SQL functions) |
+| Hosting  | Vercel (frontend), Google Cloud Run (indexer, 1 always-warm instance) |
+| Chain    | Solana mainnet (`https://api.mainnet-beta.solana.com`) |
 
-- **Frontend:**
-  - **React:** A declarative, component-based JavaScript library for building user interfaces.
-  - **TypeScript:** A superset of JavaScript that adds static typing, enhancing code quality and maintainability.
-  - **Tailwind CSS:** A utility-first CSS framework for rapidly building custom designs.
-  - **React Router:** For efficient and declarative client-side routing.
-- **Backend/Data Layer:**
-  - **Supabase (PostgreSQL):** Used as a powerful, scalable backend for indexing and querying Solana blockchain data. This includes storing transaction records and enabling advanced analytics via custom RPC functions.
-- **Blockchain Integration:**
-  - **Solana JSON-RPC:** Integrates with a Solana mainnet RPC endpoint (`https://api.mainnet-beta.solana.com`) to sample recent slots and transactions.
-- **Build Tool:**
-  - **Vite:** A next-generation frontend tooling that provides an extremely fast development experience.
+## Getting Started
 
-## ⚙️ How It Works
+### Prerequisites
 
-Chainlens operates through a robust, real-time data pipeline:
+- Node.js 20+
+- A Supabase project
+- (Optional) Google Cloud project with billing enabled, for the indexer
 
-1.  **Data Ingestion:** A background service samples the latest confirmed Solana slot (~every 15s), skipping vote-only transactions and storing up to `TXS_PER_BLOCK` transactions per sample. A daily job deletes rows older than `TX_RETENTION_DAYS` to bound table growth.
-2.  **Indexing & Storage:** Raw transaction data is then processed — parsing SystemProgram transfers for value/recipient, recording fee payer, fees, and compute units — and stored in a structured PostgreSQL database via Supabase. This indexing allows for efficient querying and analysis.
-3.  **Real-time Updates:** The frontend components (Transaction Feed, Analytics, Charts) consume data directly from the Supabase backend, ensuring that users always see the most up-to-date information.
-4.  **User Interaction:** Users can interact with the UI to search, filter, and drill down into specific transaction details, all powered by optimized queries against the indexed data.
+### 1. Set up the database
 
-## 🚀 Future Enhancements
+In the Supabase dashboard, open the SQL Editor and run `supabase/schema.sql` (fresh project) or `supabase/migrations/002_solana_switch.sql` (existing project from the EVM era). This creates the `transactions` table, indexes, the public read policy, and all RPC functions the frontend uses.
 
-Chainlens is designed with a clear roadmap for continuous development and deeper integration into the Solana ecosystem:
+Then copy your credentials from Project Settings → API Keys:
 
-- **Fee-free Onboarding:** Integrate relayers to facilitate fee-free transactions, improving user onboarding and experience.
-- **Community Savings Pools:** Implement features for tracking and visualizing on-chain treasury and micro-finance activities within Solana.
-- **Advanced Analytics Dashboards:** Develop more sophisticated dashboards for token flows, contract activity, and dApp leaderboards.
-- **Public API Layer:** Expose the indexed Solana data via a public API, allowing other builders to leverage Chainlens' data for their own applications.
-- **Token Standard Support:** Extend indexing to highlight SPL token transfers and specific program events.
+- Project URL (`https://<ref>.supabase.co`)
+- Publishable key (`sb_publishable_...`, for the frontend)
+- Secret key (`sb_secret_...`, for the indexer — keep private)
 
-## 🛠️ Getting Started (For Developers)
+### 2. Run the frontend
 
-To run Chainlens locally:
+```bash
+cp .env.example .env
+# fill in VITE_SUPABASE_URL, VITE_SUPABASE_KEY, VITE_API_URL
+npm install
+npm run dev
+```
 
-1.  **Clone the repository:**
-    ```bash
-    git clone Chainlens
-    cd chainlens
-    ```
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
-3.  **Set up Supabase:**
-    - **Create a new Supabase project** at [Supabase.com](https://supabase.com/).
-    - Once your project is created, navigate to **Project Settings -> API** to find your **Project URL** and **`anon` public key**. You will need these for your `.env` file.
-    - **Database Schema Setup:**
-      - Go to the **Table Editor** in your Supabase project.
-      - Create a new table named `transactions` by running `supabase/schema.sql` in the SQL Editor (single copy-paste: table, indexes, RLS policy, and all RPC functions).
-      - Create another table named `processing_state` with the following columns: `id` (INT, Primary Key) and `last_processed_block` (BIGINT).
-      - **Row Level Security (RLS):** Go to the **Authentication -> Policies** section.
-        - For the `transactions` table, enable RLS and create a policy to allow `SELECT` for all users.
-        - For the `processing_state` table, enable RLS and create policies to allow `SELECT` for all users and `UPDATE` for the service role (or appropriate roles for your setup).
-        - _Note: For development, you might temporarily disable RLS or use a service key, but for production, proper RLS is crucial._
+The app runs at `http://localhost:5173`. All `VITE_*` variables are inlined at build time, so restart the dev server after changing them.
 
-4.  **Configure Environment Variables:**
-    - Create a `.env` file in the project root.
-    - Add your **Supabase Project URL** and **`anon` public key** (from step 3):
-      ```
-      VITE_SUPABASE_URL="YOUR_SUPABASE_PROJECT_URL"
-      VITE_SUPABASE_KEY="YOUR_SUPABASE_ANON_PUBLIC_KEY"
-      ```
-    - Add the Solana RPC URL:
-      ```
-      VITE_API_URL="https://api.mainnet-beta.solana.com"
-      ```
-5.  **Run the development server:**
-    ```bash
-    npm run dev
-    ```
-    Chainlens should now be running at `http://localhost:5173` (or similar).
+### 3. Run the indexer
 
-## 🤝 Contributing
+```bash
+cd chainlens-backend
+npm install
+# uses ../.env (VITE_SUPABASE_URL, SUPABASE_SECRET_KEY, VITE_API_URL,
+# TXS_PER_BLOCK, TX_RETENTION_DAYS)
+npm run start:dev
+```
 
-We welcome contributions from the Solana community! If you'd like to contribute, please fork the repository and submit a pull request.
+You should see `Latest slot:` followed by `Successfully stored transactions to Supabase` within seconds.
 
-## 📄 License
+### Configuration
 
-This project is licensed under the [MIT License](LICENSE).
+| Variable | Used by | Default | Purpose |
+|----------|---------|---------|---------|
+| `VITE_SUPABASE_URL` | both | — | Supabase project URL |
+| `VITE_SUPABASE_KEY` | frontend | — | Publishable key (read-only via access policy) |
+| `SUPABASE_SECRET_KEY` | indexer | — | Secret key (bypasses access policy for writes) |
+| `VITE_API_URL` | indexer | — | Solana RPC endpoint |
+| `TXS_PER_BLOCK` | indexer | `10` | Max transactions stored per sampled slot |
+| `TX_RETENTION_DAYS` | indexer | `3` | Raw history window; older rows deleted nightly |
+
+### Deploying the indexer to Cloud Run
+
+```bash
+gcloud builds submit --tag <region>-docker.pkg.dev/<project>/chainlens/chainlens-backend chainlens-backend
+
+gcloud run deploy chainlens-backend \
+  --image <region>-docker.pkg.dev/<project>/chainlens/chainlens-backend \
+  --region <region> \
+  --allow-unauthenticated \
+  --min-instances 1 \
+  --no-cpu-throttling \
+  --memory 512Mi \
+  --set-env-vars VITE_SUPABASE_URL="...",VITE_API_URL="https://api.mainnet-beta.solana.com",TXS_PER_BLOCK="10",TX_RETENTION_DAYS="3" \
+  --update-secrets SUPABASE_SECRET_KEY=supabase-secret-key:latest
+```
+
+`--min-instances 1` and `--no-cpu-throttling` are required: without them the background schedule stalls. The frontend needs no backend URL — it reads Supabase directly, so it deploys independently (e.g. Vercel with the two `VITE_*` variables set).
+
+## Project Structure
+
+```
+app/                    Frontend routes, components, Supabase client (app/lib)
+chainlens-backend/src/  NestJS indexer (blockchain/, supabase/)
+supabase/schema.sql     Full database setup for new projects
+supabase/migrations/    Incremental migrations for existing databases
+.env.example            Documented environment template
+```
+
+## Contributing
+
+Contributions are welcome. Fork the repository, make your change with a clear commit message, and open a pull request against `main`.
+
+## License
+
+MIT. See [LICENSE](LICENSE) if present; otherwise all rights reserved by the repository owner.
